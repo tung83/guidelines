@@ -10,11 +10,11 @@ const Guideline = () => {
   return (
     <div className="guide-layout">
       <Row>
-        <Col span={6}>
+        <Col span={5}>
           <GuideNav />
           <GuideMain />
         </Col>
-        <Col span={6}>
+        <Col span={7}>
           <GuideTree />
         </Col>
         <Col span={12}>
