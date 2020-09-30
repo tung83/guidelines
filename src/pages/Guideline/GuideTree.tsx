@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Tree } from "antd";
+import { Tree, Input, Button, Checkbox } from "antd";
+import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
 const { TreeNode } = Tree;
 const treeDataSample = [
   {
@@ -57,35 +59,59 @@ const treeDataSample = [
 //   });
 //   return flattenDeep(nestedKeys);
 // };
-const TreeNodes = (data: any) =>
-  data.map((item: any) => {
-    debugger;
-    if (item.children) {
-      return (
-        <TreeNode title={<div>{item.title}</div>} key={item.key}>
-          {TreeNodes(item.children)}
-        </TreeNode>
-      );
+const renderTreeNodes = (data: any): any => {
+  const onChangeCheckbox = (e: CheckboxChangeEvent) => {
+    console.log(`checked = ${e.target.checked}`);
+  };
+  const renderTitle = (item: any) => (
+    <div className="tree-node-guideline">
+      <Button type="primary" icon={<PlusOutlined />} size={"small"} />
+      <Checkbox
+        className="tree-node-guide-checkbox"
+        onChange={onChangeCheckbox}
+      />
+      <Input
+        className="tree-node-guide-text"
+        value={item.title}
+        placeholder="Guideline name"
+      />
+      <Button
+        className="tree-node-guide-btn-delete"
+        icon={<CloseOutlined />}
+        size={"small"}
+      />
+    </div>
+  );
+  return data.map((item: any) => {
+    if (!item.children) {
+      return <TreeNode key={item.key} title={renderTitle(item)} />;
     }
-    return <TreeNode key={<h2>{item.title}</h2>} {...item} />;
+    return (
+      <TreeNode title={renderTitle(item)} key={item.key}>
+        {renderTreeNodes(item.children)}
+      </TreeNode>
+    );
   });
+};
 
 const GuideTree = () => {
   const [treeData, setTreeData] = useState<any[]>(treeDataSample);
-  debugger;
-  // useEffect(() => {
-  //   const keys = getAllKeys(treeData);
-  //   setExpandedKeys(keys);
-  // }, [treeData]);
-  const [expandedKeys, setExpandedKeys] = useState<string[]>(['"0-1-0-0']);
-  const onExpand = (expandedKeys: any) => {
-    console.log("onExpand", expandedKeys);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([
+    "0-1-0-0",
+    "0-1-0-0",
+    "0-0-0-0",
+  ]);
+  const onExpand = (newExpandedKeys: any) => {
+    console.log("onExpand", newExpandedKeys);
+    //setExpandedKeys(expandedKeys);
   };
   return (
-    <Tree onExpand={onExpand} expandedKeys={expandedKeys}>
-      <TreeNodes treeData={treeData} />
+    <Tree
+      onExpand={onExpand}
+      // switcherIcon={<div />}
+      expandedKeys={expandedKeys}
+    >
+      {renderTreeNodes(treeDataSample)}
     </Tree>
   );
 };

@@ -1,3 +1,9 @@
+/* guideline layout */
+.guide-layout {
+  margin: 50px 50px;
+}
+
+/* navigator */
 .left-right-nav {
   margin-right: 5px;
 }
@@ -5,9 +11,8 @@
 .left-right-nav {
   display: inline-block;
 }
-.guide-layout {
-  margin: 50px 50px;
-}
+
+/* guideline master */
 .panel-box {
   position: relative;
   width: 210px;
@@ -27,4 +32,18 @@
 .guideline-select {
   width: 100%;
   margin-bottom: 10px;
+}
+/* tree view */
+.tree-node-guideline {
+  display: inline-block;
+}
+.tree-node-guide-text {
+  width: calc(100% - 92px);
+  margin-right: 5px;
+}
+.tree-node-guide-checkbox {
+  margin: 0 5px;
+}
+.tree-node-guide-btn-delete {
+  margin: 0 5px;
 }
