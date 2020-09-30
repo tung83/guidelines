@@ -17,7 +17,7 @@ const Guideline = () => {
         <Col span={6}>
           <GuideTree />
         </Col>
-        <Col span={24}>
+        <Col span={12}>
           <GuideContent />
         </Col>
       </Row>

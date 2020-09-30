@@ -15,7 +15,7 @@
 /* guideline master */
 .panel-box {
   position: relative;
-  width: 210px;
+  width: 100%;
   border-radius: 0 0 2px 2px;
   color: rgba(0, 0, 0, 0.85);
   border: 1px solid #f0f0f0;
@@ -46,4 +46,12 @@
 }
 .tree-node-guide-btn-delete {
   margin: 0 5px;
+}
+/* .tox-statusbar__branding {
+  display: none;
+} */
+
+/* guide Content */
+.text-guide-content {
+  margin-bottom: 5px;
 }
