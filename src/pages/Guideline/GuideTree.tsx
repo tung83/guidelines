@@ -48,24 +48,22 @@ const treeDataSample = [
   },
 ];
 
-// const getAllKeys = (data: any) => {
-//   // This function makes an array of keys, this is specific for this example, you would have to adopt for your case. If your list is dynamic, also make sure that you call this function everytime data changes.
-//   const nestedKeys = data.map((node: any) => {
-//     let childKeys: any = [];
-//     if (node.children) {
-//       childKeys = getAllKeys(node.children);
-//     }
-//     return [childKeys, node.key];
-//   });
-//   return flattenDeep(nestedKeys);
-// };
-const renderTreeNodes = (data: any): any => {
+const renderTreeNodes = (
+  data: any,
+  handleAddNewNode: any,
+  handleDeleteNode: any
+): any => {
   const onChangeCheckbox = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
   };
   const renderTitle = (item: any) => (
     <div className="tree-node-guideline">
-      <Button type="primary" icon={<PlusOutlined />} size={"small"} />
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        size={"small"}
+        onClick={(e: any) => handleAddNewNode(item)}
+      />
       <Checkbox
         className="tree-node-guide-checkbox"
         onChange={onChangeCheckbox}
@@ -79,6 +77,7 @@ const renderTreeNodes = (data: any): any => {
         className="tree-node-guide-btn-delete"
         icon={<CloseOutlined />}
         size={"small"}
+        onClick={(e: any) => handleDeleteNode(item)}
       />
     </div>
   );
@@ -88,7 +87,7 @@ const renderTreeNodes = (data: any): any => {
     }
     return (
       <TreeNode title={renderTitle(item)} key={item.key}>
-        {renderTreeNodes(item.children)}
+        {renderTreeNodes(item.children, handleAddNewNode)}
       </TreeNode>
     );
   });
@@ -96,11 +95,24 @@ const renderTreeNodes = (data: any): any => {
 
 const GuideTree = () => {
   const [treeData, setTreeData] = useState<any[]>(treeDataSample);
+  const [newIndex, setNewIndex] = useState(0);
   const [expandedKeys, setExpandedKeys] = useState<string[]>([
     "0-1-0-0",
     "0-1-0-0",
     "0-0-0-0",
   ]);
+  const handleAddNewNode = (parent: any) => {
+    if (!parent.children) {
+      parent.children = [];
+    }
+    setNewIndex(newIndex + 1);
+    parent.push({
+      key: `${parent.key}-new-${newIndex}`,
+      title: "",
+      children: [],
+    });
+    setTreeData([...treeData]);
+  };
   const onExpand = (newExpandedKeys: any) => {
     console.log("onExpand", newExpandedKeys);
     //setExpandedKeys(expandedKeys);
@@ -108,10 +120,10 @@ const GuideTree = () => {
   return (
     <Tree
       onExpand={onExpand}
-      // switcherIcon={<div />}
+      switcherIcon={<div />}
       expandedKeys={expandedKeys}
     >
-      {renderTreeNodes(treeDataSample)}
+      {renderTreeNodes(treeData, handleAddNewNode, handleDeleteNode)}
     </Tree>
   );
 };
