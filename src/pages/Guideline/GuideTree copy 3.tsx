@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import { Tree, Input, Button, Checkbox } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
-import {
-  guideNodeFetch,
-  guideNodePut,
-  guideNodePost,
-  guideNodeDelete,
-} from "../../store/guideNode/action";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { guidelineDelete } from "store/guideline/action";
 const { TreeNode } = Tree;
 const treeDataSample = [
   {
@@ -56,22 +48,24 @@ const treeDataSample = [
   },
 ];
 
-const renderTreeNodes = (
-  data: any,
-  handleAddNewNode: any,
-  handleDeleteNode: any
-): any => {
+// const getAllKeys = (data: any) => {
+//   // This function makes an array of keys, this is specific for this example, you would have to adopt for your case. If your list is dynamic, also make sure that you call this function everytime data changes.
+//   const nestedKeys = data.map((node: any) => {
+//     let childKeys: any = [];
+//     if (node.children) {
+//       childKeys = getAllKeys(node.children);
+//     }
+//     return [childKeys, node.key];
+//   });
+//   return flattenDeep(nestedKeys);
+// };
+const renderTreeNodes = (data: any): any => {
   const onChangeCheckbox = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
   };
   const renderTitle = (item: any) => (
     <div className="tree-node-guideline">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        size={"small"}
-        onClick={(e: any) => handleAddNewNode(item)}
-      />
+      <Button type="primary" icon={<PlusOutlined />} size={"small"} />
       <Checkbox
         className="tree-node-guide-checkbox"
         onChange={onChangeCheckbox}
@@ -85,7 +79,6 @@ const renderTreeNodes = (
         className="tree-node-guide-btn-delete"
         icon={<CloseOutlined />}
         size={"small"}
-        onClick={(e: any) => handleDeleteNode(item)}
       />
     </div>
   );
@@ -95,64 +88,35 @@ const renderTreeNodes = (
     }
     return (
       <TreeNode title={renderTitle(item)} key={item.key}>
-        {renderTreeNodes(item.children, handleAddNewNode, handleDeleteNode)}
+        {renderTreeNodes(item.children)}
       </TreeNode>
     );
   });
 };
 
-const GuideTree = ({ guideNodes }: any) => {
+function useForceUpdate() {
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue((value) => ++value); // update the state to force render
+}
+const GuideTree = () => {
   const [treeData, setTreeData] = useState<any[]>(treeDataSample);
-  const [newIndex, setNewIndex] = useState(0);
   const [expandedKeys, setExpandedKeys] = useState<string[]>([
     "0-1-0-0",
     "0-1-0-0",
     "0-0-0-0",
   ]);
-
-  useEffect(() => {
-    setTreeData(guideNodes);
-  }, [guideNodes]);
-  const handleAddNewNode = (parent: any) => {
-    if (!parent.children) {
-      parent.children = [];
-    }
-    setNewIndex(newIndex + 1);
-    parent.push({
-      key: `${parent.key}-new-${newIndex}`,
-      title: "",
-      children: [],
-    });
-    setTreeData([...treeData]);
-  };
-  const handleDeleteNode = (node: any) => {
-    guidelineDelete(node.Id);
-  };
   const onExpand = (newExpandedKeys: any) => {
     console.log("onExpand", newExpandedKeys);
+    //setExpandedKeys(expandedKeys);
   };
   return (
     <Tree
       onExpand={onExpand}
-      switcherIcon={<div />}
+      // switcherIcon={<div />}
       expandedKeys={expandedKeys}
     >
-      {renderTreeNodes(treeData, handleAddNewNode, handleDeleteNode)}
+      {renderTreeNodes(treeData)}
     </Tree>
   );
 };
-
-export default connect(
-  (state: any) => {
-    return {
-      guideNodes: state.guideNode.guideNodes,
-      onGuidelineSelected: state.guideline.onGuidelineSelected,
-    };
-  },
-  {
-    guideNodeFetch,
-    guideNodePost,
-    guideNodePut,
-    guideNodeDelete,
-  }
-)(GuideTree);
+export default GuideTree;
