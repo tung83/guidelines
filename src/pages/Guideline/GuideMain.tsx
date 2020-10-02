@@ -15,7 +15,7 @@ const GuideMain = ({ guidelines, guidelineFetch }: any) => {
   const [selectedGuidelineName, setSelectedGuidelineName] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
   const [guidelineList, setGuidelineList] = useState<any>([]);
-  const [oldText, setOldText] = useState<any>([]);
+  const [oldText, setOldText] = useState<any>();
   const [value, setValue] = useState<any>();
   useEffect(() => {
     guidelineFetch();

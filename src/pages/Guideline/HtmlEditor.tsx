@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 
 const HtmlEditor = () => {
-  const [editorState, setEditorState] = React.useState("");
+  const [editorState, setEditorState] = useState(
+    "<p>tttThis is the initial content of the editor</p>"
+  );
+  const [oldText, setOldText] = useState<any>();
 
   const handleEditorChange = (content: any, editor: any) => {
-    console.log("Content was updated:", content);
+    setEditorState(content);
   };
 
+  const saveTextChanged = (event: any) => {
+    if (oldText !== editorState) {
+      setOldText(editorState);
+      console.log("update name", oldText, editorState);
+      //guidelinePut(1, { Content: editorState });
+    }
+  };
+  const handleFocus = (event: any) => {
+    if (oldText !== editorState) {
+      setOldText(event.target.value);
+    }
+  };
   return (
     <Editor
+      value={editorState}
       initialValue="<p>This is the initial content of the editor</p>"
       init={{
         height: 500,
@@ -23,6 +39,8 @@ const HtmlEditor = () => {
           "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
       }}
       onEditorChange={handleEditorChange}
+      onBlur={saveTextChanged}
+      onFocus={handleFocus}
     />
   );
 };
