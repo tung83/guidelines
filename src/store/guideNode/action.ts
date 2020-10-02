@@ -1,33 +1,33 @@
 import * as actions from "store/actionNames";
-
-export function guideNodeFetch() {
+import { BaseAction } from "../common";
+export const guideNodeFetch = (): BaseAction => {
   return {
     type: actions.GUIDE_NODE_FETCH,
   };
-}
-export function guideNodeFetchDetail(id) {
+};
+export const guideNodeFetchDetail = (id: number): BaseAction => {
   return {
     type: actions.GUIDE_NODE_FETCH_DETAIL,
     id: id,
   };
-}
+};
 
-export function guideNodePost(payload) {
+export const guideNodePost = (payload: any): BaseAction => {
   return {
     type: actions.GUIDE_NODE_POST,
     payload: payload,
   };
-}
-export function guideNodePut(id, payload) {
+};
+export const guideNodePut = (id: number, payload: any): BaseAction => {
   return {
     type: actions.GUIDE_NODE_PUT,
     payload: payload,
     id: id,
   };
-}
-export function guideNodeDelete(id) {
+};
+export const guideNodeDelete = (id: number): BaseAction => {
   return {
     type: actions.GUIDE_NODE_DELETE,
     id: id,
   };
-}
+};

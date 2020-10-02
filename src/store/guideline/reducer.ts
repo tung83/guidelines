@@ -1,4 +1,5 @@
 import * as actions from "store/actionNames";
+import { BaseAction } from "../common";
 
 const initialState = {
   guidelines: [],
@@ -6,12 +7,15 @@ const initialState = {
   onGuidelineSelected: -1,
 };
 
-export default function guidelineReducer(state = initialState, action) {
+export default function guidelineReducer(
+  state = initialState,
+  action: BaseAction
+) {
   switch (action.type) {
     case actions.GUIDELINE_FETCH_RECEIVED:
-      return { ...state, ...{ guidelines: action.guidelines } };
+      return { ...state, ...{ guidelines: action.payload } };
     case actions.GUIDELINE_FETCH_DETAIL_RECEIVED:
-      return { ...state, ...{ currentGuideline: action.guideline } };
+      return { ...state, ...{ currentGuideline: action.payload } };
     case actions.ON_GUIDELINE_SELECTED:
       return { ...state, ...{ onGuidelineSelected: action.id } };
 

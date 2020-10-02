@@ -12,7 +12,7 @@ const { Option } = Select;
 
 const GuideMain = ({ guidelines }: any) => {
   const changeGuidelineSelect = (value: SelectValue) => {
-    onGuidelineSelected(value);
+    onGuidelineSelected(value.toString());
   };
   return (
     <section className="panel-box">
@@ -43,7 +43,7 @@ export default connect(
   (state: any) => {
     return {
       guidelines: state.guideline.guidelines,
-      currentGuideline: state.menu.currentGuideline,
+      currentGuideline: state.guideline.currentGuideline,
     };
   },
   {

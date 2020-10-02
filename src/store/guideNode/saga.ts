@@ -1,6 +1,7 @@
 import { get, post, put as putApi, del } from "utils/apiCall";
 import { put, call, takeLatest } from "redux-saga/effects";
 import * as actions from "store/actionNames";
+import { BaseAction } from "../common";
 const baseUrl = "guideNodes";
 
 // guideNodeFetchAsync
@@ -8,7 +9,7 @@ function* guideNodeFetchAsync() {
   let { data } = yield call(get, baseUrl);
   yield put({
     type: actions.GUIDE_NODE_FETCH_RECEIVED,
-    guideNodes: data || [],
+    payload: data || [],
   });
 }
 
@@ -17,7 +18,7 @@ function* watchGuideNodeAsync() {
 }
 
 // guideNodeFetchDetailAsync
-function* guideNodeFetchDetailAsync(action) {
+function* guideNodeFetchDetailAsync(action: BaseAction) {
   let data = null;
   if (action.id) {
     let result = yield call(get, `${baseUrl}/${action.id}`);
@@ -25,7 +26,7 @@ function* guideNodeFetchDetailAsync(action) {
   }
   yield put({
     type: actions.GUIDE_NODE_FETCH_DETAIL_RECEIVED,
-    guideNode: data,
+    payload: data,
   });
 }
 function* watchguideNodeFetchDetailAsync() {
@@ -33,7 +34,7 @@ function* watchguideNodeFetchDetailAsync() {
 }
 
 // guideNodePostAsync
-function* guideNodePostAsync(action) {
+function* guideNodePostAsync(action: BaseAction) {
   yield call(post, baseUrl, action.payload);
   yield call(guideNodeFetchAsync);
 }
@@ -43,7 +44,7 @@ function* watchGuideNodePostAsync() {
 }
 
 // guideNodePutAsync
-function* guideNodePutAsync(action) {
+function* guideNodePutAsync(action: BaseAction) {
   yield call(putApi, `${baseUrl}/${action.id}`, action.payload);
   yield call(guideNodeFetchAsync);
 }
@@ -53,7 +54,7 @@ function* watchGuideNodePutAsync() {
 }
 
 // guideNodeDeleteAsync
-function* guideNodeDeleteAsync(action) {
+function* guideNodeDeleteAsync(action: BaseAction) {
   yield call(del, `${baseUrl}/${action.id}`);
   yield call(guideNodeFetchAsync);
 }
