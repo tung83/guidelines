@@ -2,7 +2,7 @@ import { get, post, put as putApi, del } from "utils/apiCall";
 import { put, call, takeLatest } from "redux-saga/effects";
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
-const baseUrl = "guidelines";
+const baseUrl = "foods";
 
 // guidelineFetchAsync
 function* guidelineFetchAsync() {
