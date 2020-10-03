@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { connect } from "react-redux";
+import {
+  guideNodeContentPut,
+  guideNodeContentPost,
+} from "../../store/guideNodeContent/action";
 
-const HtmlEditor = () => {
-  const [editorState, setEditorState] = useState(
-    "<p>tttThis is the initial content of the editor</p>"
-  );
+const HtmlEditor = ({
+  currentGuideNodeContent,
+  currentGuideNodeContentId,
+  guideNodeContentPut,
+  guideNodeContentPost,
+}: any) => {
+  const [editorState, setEditorState] = useState("");
+  useEffect(() => {
+    setEditorState(
+      currentGuideNodeContent == null ? "" : currentGuideNodeContent.Content
+    );
+  }, [currentGuideNodeContent]);
   const [oldText, setOldText] = useState<any>();
 
   const handleEditorChange = (content: any, editor: any) => {
@@ -15,7 +28,16 @@ const HtmlEditor = () => {
     if (oldText !== editorState) {
       setOldText(editorState);
       console.log("update name", oldText, editorState);
-      //guidelinePut(1, { Content: editorState });
+      currentGuideNodeContent?.Id > 0
+        ? guideNodeContentPut(currentGuideNodeContent.Id, {
+            ...currentGuideNodeContent,
+            Content: editorState,
+          })
+        : guideNodeContentPost({
+            NodeId: currentGuideNodeContentId,
+            Id: 0,
+            Content: editorState,
+          });
     }
   };
   const handleFocus = (event: any) => {
@@ -44,4 +66,16 @@ const HtmlEditor = () => {
     />
   );
 };
-export default HtmlEditor;
+export default connect(
+  (state: any) => {
+    return {
+      currentGuideNodeContent: state.guideNodeContent.currentGuideNodeContent,
+      currentGuideNodeContentId:
+        state.guideNodeContent.currentGuideNodeContentId,
+    };
+  },
+  {
+    guideNodeContentPut,
+    guideNodeContentPost,
+  }
+)(HtmlEditor);

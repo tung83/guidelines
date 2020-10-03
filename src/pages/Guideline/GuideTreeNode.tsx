@@ -14,7 +14,8 @@ const GuideTreeNode = ({
   item,
   handleAddNewNode,
   handleDeleteNode,
-  onItemNameChanged,
+  handleItemNameChanged,
+  handleItemCheckChanged,
 }: any) => {
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
@@ -22,15 +23,16 @@ const GuideTreeNode = ({
     setNameValue(item.Name);
     setOldText(item.Name);
   }, [item]);
-  const onChangeCheckbox = (e: CheckboxChangeEvent) => {
+  const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
     console.log(`checked = ${e.target.checked}`);
+    handleItemCheckChanged(item);
   };
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameValue(e.target.value);
   };
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (oldText !== nameValue) {
-      onItemNameChanged({ ...item, Name: nameValue });
+      handleItemNameChanged({ ...item, Name: nameValue });
     }
   };
 
@@ -44,7 +46,7 @@ const GuideTreeNode = ({
       />
       <Checkbox
         className="tree-node-guide-checkbox"
-        onChange={onChangeCheckbox}
+        onChange={handleChangeCheckbox}
       />
       <Input
         className="tree-node-guide-text"

@@ -1,15 +1,17 @@
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
-import { NodeData } from "../../model";
+import { NodeData, NodeContent } from "../../model";
 
 const initialState = {
   guideNodes: [],
   guideNodesInserted: [],
+  currentGuideNodeContent: null,
 };
 
 export interface IGuideNodeState {
   guideNodes: NodeData[];
   guideNodesInserted: NodeData[];
+  currentGuideNodeContent: NodeContent | null;
 }
 export default function guideNodeReducer(
   state: IGuideNodeState = initialState,

@@ -8,6 +8,7 @@ import {
   guideNodeDelete,
   resetGuideNodesInserted,
 } from "../../store/guideNode/action";
+import { guideNodeContentFetchDetail } from "../../store/guideNodeContent/action";
 import { findNode, flatten, removeNode } from "utils/useArray";
 import GuideTreeNode from "./GuideTreeNode";
 import { NodeData } from "model";
@@ -16,7 +17,8 @@ const renderTreeNodes = (
   data: any,
   handleAddNewNode: any,
   handleDeleteNode: any,
-  handleItemNameChanged: any
+  handleItemNameChanged: any,
+  handleItemCheckChanged: any
 ): any => {
   return data?.map((item: any) => {
     if (!item.children || item.children.length === 0) {
@@ -28,7 +30,8 @@ const renderTreeNodes = (
               item={item}
               handleAddNewNode={handleAddNewNode}
               handleDeleteNode={handleDeleteNode}
-              onItemNameChanged={handleItemNameChanged}
+              handleItemNameChanged={handleItemNameChanged}
+              handleItemCheckChanged={handleItemCheckChanged}
             />
           }
         />
@@ -42,7 +45,8 @@ const renderTreeNodes = (
             item={item}
             handleAddNewNode={handleAddNewNode}
             handleDeleteNode={handleDeleteNode}
-            onItemNameChanged={handleItemNameChanged}
+            handleItemNameChanged={handleItemNameChanged}
+            handleItemCheckChanged={handleItemCheckChanged}
           />
         }
       >
@@ -50,7 +54,8 @@ const renderTreeNodes = (
           item.children,
           handleAddNewNode,
           handleDeleteNode,
-          handleItemNameChanged
+          handleItemNameChanged,
+          (handleItemCheckChanged = { handleItemCheckChanged })
         )}
       </TreeNode>
     );
@@ -63,6 +68,7 @@ const GuideTree = ({
   guideNodePost,
   guideNodeDelete,
   guideNodesInserted,
+  guideNodeContentFetchDetail,
 }: any) => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
@@ -75,7 +81,6 @@ const GuideTree = ({
   // update childnode of newly inserted
   useEffect(() => {
     guideNodesInserted.forEach((x: NodeData) => {
-      debugger;
       let foundNode = findNode(
         treeData,
         (y: NodeData) => y.SupId === x.SupId && y.Order === x.Order
@@ -118,6 +123,9 @@ const GuideTree = ({
   const handleItemNameChanged = (node: any) => {
     guideNodePut(node.Id, node);
   };
+  const handleItemCheckChanged = (node: any) => {
+    guideNodeContentFetchDetail(node.Id);
+  };
 
   const onExpand = (newExpandedKeys: any) => {
     console.log("onExpand", newExpandedKeys);
@@ -133,7 +141,8 @@ const GuideTree = ({
         treeData,
         handleAddNewNode,
         handleDeleteNode,
-        handleItemNameChanged
+        handleItemNameChanged,
+        handleItemCheckChanged
       )}
     </Tree>
   );
@@ -151,5 +160,6 @@ export default connect(
     guideNodePut,
     guideNodeDelete,
     resetGuideNodesInserted,
+    guideNodeContentFetchDetail,
   }
 )(GuideTree);

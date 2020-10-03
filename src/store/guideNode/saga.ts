@@ -16,7 +16,6 @@ function* guideNodeFetchAsync() {
 function* watchGuideNodeAsync() {
   yield takeLatest(actions.GUIDE_NODE_FETCH, guideNodeFetchAsync);
 }
-
 // guideNodePostAsync
 function* guideNodePostAsync(action: BaseAction) {
   let { data } = yield call(post, baseUrl, action.payload);

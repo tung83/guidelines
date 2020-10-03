@@ -3,6 +3,7 @@ import appSaga from "./app/saga";
 import guidelineSaga from "./guideline/saga";
 import mealSaga from "./meal/saga";
 import guideNodeSaga from "./guideNode/saga";
+import guideNodeContentSaga from "./guideNodeContent/saga";
 import { all } from "redux-saga/effects";
 
 import { combineReducers } from "redux";
@@ -11,6 +12,8 @@ import children from "./children/reducer";
 import guideline from "./guideline/reducer";
 import meal from "./meal/reducer";
 import guideNode from "./guideNode/reducer";
+import guideNodeContent from "./guideNodeContent/reducer";
+
 import app from "./app/reducer";
 
 export const reducers = combineReducers({
@@ -20,6 +23,7 @@ export const reducers = combineReducers({
   guideline,
   meal,
   guideNode,
+  guideNodeContent,
 });
 
 export default function* rootSaga() {
@@ -29,5 +33,6 @@ export default function* rootSaga() {
     ...guidelineSaga,
     ...mealSaga,
     ...guideNodeSaga,
+    ...guideNodeContentSaga,
   ]);
 }

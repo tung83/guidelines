@@ -5,7 +5,6 @@ export const guideNodeFetch = (): BaseAction => {
     type: actions.GUIDE_NODE_FETCH,
   };
 };
-
 export const guideNodePost = (payload: any): BaseAction => {
   return {
     type: actions.GUIDE_NODE_POST,
@@ -25,7 +24,6 @@ export const guideNodeDelete = (id: number): BaseAction => {
     id: id,
   };
 };
-
 export const resetGuideNodesInserted = (): BaseAction => {
   return {
     type: actions.GUIDE_NODE_INSERT_RESET,
