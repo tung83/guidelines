@@ -25,7 +25,7 @@ export const findNode = (dataArray, predicator) => {
 export const removeNode = (dataArray, node) => {
   // if in first array
   let level1Index = dataArray.findIndex((x) => x.Id === node.Id);
-  if (level1Index) {
+  if (level1Index !== -1) {
     dataArray.splice(level1Index, 1);
     return;
   }
