@@ -1,8 +1,8 @@
 import { get, post, put as putApi, del } from "utils/apiCall";
-import { put, call, takeLatest } from "redux-saga/effects";
+import { put, call, takeLatest, takeEvery } from "redux-saga/effects";
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
-const baseUrl = "foods";
+const baseUrl = "nodes";
 
 // guidelineFetchAsync
 function* guidelineFetchAsync() {
@@ -36,11 +36,11 @@ function* watchguidelineFetchDetailAsync() {
 // guidelinePostAsync
 function* guidelinePostAsync(action: BaseAction) {
   yield call(post, baseUrl, action.payload);
-  yield call(guidelineFetchAsync);
+  //yield call(guidelineFetchAsync);
 }
 
 function* watchGuidelinePostAsync() {
-  yield takeLatest(actions.GUIDELINE_POST, guidelinePostAsync);
+  yield takeEvery(actions.GUIDELINE_POST, guidelinePostAsync);
 }
 
 // guidelinePutAsync
@@ -50,7 +50,7 @@ function* guidelinePutAsync(action: BaseAction) {
 }
 
 function* watchGuidelinePutAsync() {
-  yield takeLatest(actions.GUIDELINE_PUT, guidelinePutAsync);
+  yield takeEvery(actions.GUIDELINE_PUT, guidelinePutAsync);
 }
 
 // guidelineDeleteAsync
@@ -59,7 +59,7 @@ function* guidelineDeleteAsync(action: BaseAction) {
   yield call(guidelineFetchAsync);
 }
 function* watchGuidelineDeleteAsync() {
-  yield takeLatest(actions.GUIDELINE_DELETE, guidelineDeleteAsync);
+  yield takeEvery(actions.GUIDELINE_DELETE, guidelineDeleteAsync);
 }
 
 export default [

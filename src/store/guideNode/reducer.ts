@@ -4,12 +4,12 @@ import { NodeData } from "../../model";
 
 const initialState = {
   guideNodes: [],
-  currentGuideNode: null,
+  guideNodesInserted: [],
 };
 
 export interface IGuideNodeState {
   guideNodes: NodeData[];
-  currentGuideNode: NodeData | null;
+  guideNodesInserted: NodeData[];
 }
 export default function guideNodeReducer(
   state: IGuideNodeState = initialState,
@@ -18,8 +18,20 @@ export default function guideNodeReducer(
   switch (action.type) {
     case actions.GUIDE_NODE_FETCH_RECEIVED:
       return { ...state, ...{ guideNodes: action.payload as NodeData[] } };
-    case actions.GUIDE_NODE_FETCH_DETAIL_RECEIVED:
-      return { ...state, ...{ currentGuideNode: action.payload } };
+    case actions.GUIDE_NODE_INSERT_RECEIVED:
+      return {
+        ...state,
+        ...{
+          guideNodesInserted: [...state.guideNodesInserted, action.payload],
+        },
+      };
+    case actions.GUIDE_NODE_INSERT_RESET:
+      return {
+        ...state,
+        ...{
+          guideNodesInserted: [],
+        },
+      };
     default:
       return state;
   }

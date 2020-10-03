@@ -1,143 +1,140 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Tree, Input, Button, Checkbox } from "antd";
-import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
+import { Tree } from "antd";
 import "./Guideline.css";
 import {
-  guideNodeFetch,
   guideNodePut,
   guideNodePost,
   guideNodeDelete,
+  resetGuideNodesInserted,
 } from "../../store/guideNode/action";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
-import { guidelineDelete } from "store/guideline/action";
+import { findNode, flatten, removeNode } from "utils/useArray";
+import GuideTreeNode from "./GuideTreeNode";
+import { NodeData } from "model";
 const { TreeNode } = Tree;
-const treeDataSample = [
-  {
-    title: "0-0",
-    key: "0-0",
-    children: [
-      {
-        title: "0-0-0",
-        key: "0-0-0",
-        children: [
-          { title: "0-0-0-0", key: "0-0-0-0" },
-          { title: "0-0-0-1", key: "0-0-0-1" },
-          { title: "0-0-0-2", key: "0-0-0-2" },
-        ],
-      },
-      {
-        title: "0-0-1",
-        key: "0-0-1",
-        children: [
-          { title: "0-0-1-0", key: "0-0-1-0" },
-          { title: "0-0-1-1", key: "0-0-1-1" },
-          { title: "0-0-1-2", key: "0-0-1-2" },
-        ],
-      },
-      {
-        title: "0-0-2",
-        key: "0-0-2",
-      },
-    ],
-  },
-  {
-    title: "0-1",
-    key: "0-1",
-    children: [
-      { title: "0-1-0-0", key: "0-1-0-0" },
-      { title: "0-1-0-1", key: "0-1-0-1" },
-      { title: "0-1-0-2", key: "0-1-0-2" },
-    ],
-  },
-  {
-    title: "0-2",
-    key: "0-2",
-  },
-];
-
 const renderTreeNodes = (
   data: any,
   handleAddNewNode: any,
-  handleDeleteNode: any
+  handleDeleteNode: any,
+  handleItemNameChanged: any
 ): any => {
-  const onChangeCheckbox = (e: CheckboxChangeEvent) => {
-    console.log(`checked = ${e.target.checked}`);
-  };
-  const renderTitle = (item: any) => (
-    <div className="tree-node-guideline">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        size={"small"}
-        onClick={(e: any) => handleAddNewNode(item)}
-      />
-      <Checkbox
-        className="tree-node-guide-checkbox"
-        onChange={onChangeCheckbox}
-      />
-      <Input
-        className="tree-node-guide-text"
-        value={item.title}
-        placeholder="Guideline name"
-      />
-      <Button
-        className="tree-node-guide-btn-delete"
-        icon={<CloseOutlined />}
-        size={"small"}
-        onClick={(e: any) => handleDeleteNode(item)}
-      />
-    </div>
-  );
-  return data.map((item: any) => {
-    if (!item.children) {
-      return <TreeNode key={item.key} title={renderTitle(item)} />;
+  return data?.map((item: any) => {
+    if (!item.children || item.children.length === 0) {
+      return (
+        <TreeNode
+          key={item.key}
+          title={
+            <GuideTreeNode
+              item={item}
+              handleAddNewNode={handleAddNewNode}
+              handleDeleteNode={handleDeleteNode}
+              onItemNameChanged={handleItemNameChanged}
+            />
+          }
+        />
+      );
     }
     return (
-      <TreeNode title={renderTitle(item)} key={item.key}>
-        {renderTreeNodes(item.children, handleAddNewNode, handleDeleteNode)}
+      <TreeNode
+        key={item.key}
+        title={
+          <GuideTreeNode
+            item={item}
+            handleAddNewNode={handleAddNewNode}
+            handleDeleteNode={handleDeleteNode}
+            onItemNameChanged={handleItemNameChanged}
+          />
+        }
+      >
+        {renderTreeNodes(
+          item.children,
+          handleAddNewNode,
+          handleDeleteNode,
+          handleItemNameChanged
+        )}
       </TreeNode>
     );
   });
 };
 
-const GuideTree = ({ guideNodes }: any) => {
-  const [treeData, setTreeData] = useState<any[]>(treeDataSample);
+const GuideTree = ({
+  currentChildNodes,
+  guideNodePut,
+  guideNodePost,
+  guideNodeDelete,
+  guideNodesInserted,
+}: any) => {
+  const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
-  const [expandedKeys, setExpandedKeys] = useState<string[]>([
-    "0-1-0-0",
-    "0-1-0-0",
-    "0-0-0-0",
-  ]);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
   useEffect(() => {
-    setTreeData(guideNodes);
-  }, [guideNodes]);
+    setTreeData(currentChildNodes.map((x: NodeData) => ({ ...x, key: x.Id })));
+    setExpandedKeys(flatten(currentChildNodes));
+  }, [currentChildNodes]);
+  // update childnode of newly inserted
+  useEffect(() => {
+    guideNodesInserted.forEach((x: NodeData) => {
+      debugger;
+      let foundNode = findNode(
+        treeData,
+        (y: NodeData) => y.SupId === x.SupId && y.Order === x.Order
+      );
+      foundNode.Id = x.Id;
+    });
+    setTreeData([...treeData]);
+  }, [guideNodesInserted]);
+
   const handleAddNewNode = (parent: any) => {
     if (!parent.children) {
       parent.children = [];
     }
-    setNewIndex(newIndex + 1);
-    parent.push({
-      key: `${parent.key}-new-${newIndex}`,
-      title: "",
+    setNewIndex(newIndex - 1);
+    const newKey = `${newIndex - 1}`;
+    const order =
+      parent.children.length === 0
+        ? 1
+        : parent.children[parent.children.length - 1].Order;
+    const newItem = {
+      Id: 0,
+      Name: "",
+      Order: order + 1,
+      SupId: parent.Id,
       children: [],
+    };
+    parent.children.push({
+      key: newKey,
+      ...newItem,
     });
     setTreeData([...treeData]);
+    setExpandedKeys([...expandedKeys, newKey]);
+    guideNodePost(newItem);
   };
   const handleDeleteNode = (node: any) => {
-    guidelineDelete(node.Id);
+    guideNodeDelete(node.Id);
+    removeNode(treeData, node);
+    setTreeData([...treeData]);
   };
+  const handleItemNameChanged = (node: any) => {
+    guideNodePut(node.Id, node);
+  };
+
   const onExpand = (newExpandedKeys: any) => {
     console.log("onExpand", newExpandedKeys);
   };
+
   return (
     <Tree
       onExpand={onExpand}
       switcherIcon={<div />}
       expandedKeys={expandedKeys}
     >
-      {renderTreeNodes(treeData, handleAddNewNode, handleDeleteNode)}
+      {renderTreeNodes(
+        treeData,
+        handleAddNewNode,
+        handleDeleteNode,
+        handleItemNameChanged
+      )}
     </Tree>
   );
 };
@@ -145,14 +142,14 @@ const GuideTree = ({ guideNodes }: any) => {
 export default connect(
   (state: any) => {
     return {
-      guideNodes: state.guideNode.guideNodes,
-      onGuidelineSelected: state.guideline.onGuidelineSelected,
+      currentChildNodes: state.guideline.currentChildNodes,
+      guideNodesInserted: state.guideNode.guideNodesInserted,
     };
   },
   {
-    guideNodeFetch,
     guideNodePost,
     guideNodePut,
     guideNodeDelete,
+    resetGuideNodesInserted,
   }
 )(GuideTree);

@@ -1,22 +1,29 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Select, Input } from "antd";
+import { NodeData } from "../../model";
 
 import "./Guideline.css";
 import {
   guidelineFetch,
+  guidelineFetchDetail,
   guidelinePut,
   onGuidelineSelected,
 } from "../../store/guideline/action";
 import { SelectValue } from "antd/lib/select";
 const { Option } = Select;
 
-const GuideMain = ({ guidelines, guidelineFetch }: any) => {
+const GuideMain = ({
+  guidelines,
+  guidelineFetch,
+  guidelinePut,
+  guidelineFetchDetail,
+}: any) => {
   const [selectedGuidelineName, setSelectedGuidelineName] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
-  const [guidelineList, setGuidelineList] = useState<any>([]);
+  const [guidelineList, setGuidelineList] = useState<NodeData[]>([]);
   const [oldText, setOldText] = useState<any>();
-  const [value, setValue] = useState<any>();
+  const [selectedValue, setSelectedValue] = useState<any>();
   useEffect(() => {
     guidelineFetch();
   }, []);
@@ -25,26 +32,31 @@ const GuideMain = ({ guidelines, guidelineFetch }: any) => {
   }, [guidelines]);
 
   const changeGuidelineSelect = (value: SelectValue, option: any) => {
-    setValue(value);
+    guidelineFetchDetail(option.key);
+    setSelectedValue(value);
     setSelectedOption(option);
     setSelectedGuidelineName(value as string);
     setOldText(value);
     onGuidelineSelected(value.toString());
   };
+  const findCurentNodeIndex = (): number => {
+    return guidelineList.findIndex((x) => x.Id === Number(selectedOption.key));
+  };
   const handleTextChanged = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedGuidelineName(event.target.value);
-    var foundIndex = guidelineList.findIndex(
-      (x: any) => x.Id == selectedOption.key
-    );
+    const foundIndex = findCurentNodeIndex();
     guidelineList[foundIndex].Name = event.target.value;
     setGuidelineList([...guidelineList]);
-    setValue(event.target.value);
+    setSelectedValue(event.target.value);
   };
   const saveTextChanged = (event: React.FocusEvent<HTMLInputElement>) => {
     if (oldText !== selectedGuidelineName) {
       setOldText(selectedGuidelineName);
-      console.log("update name", oldText, selectedGuidelineName);
-      guidelinePut(selectedOption.key, { Name: selectedGuidelineName });
+      const foundIndex = findCurentNodeIndex();
+      guidelinePut(selectedOption.key, {
+        ...guidelineList[foundIndex],
+        Name: selectedGuidelineName,
+      });
     }
   };
 
@@ -55,7 +67,7 @@ const GuideMain = ({ guidelines, guidelineFetch }: any) => {
         <Select
           className="guideline-select"
           showSearch
-          value={value}
+          value={selectedValue}
           optionFilterProp="children"
           onChange={changeGuidelineSelect}
           dropdownStyle={{ minWidth: "500px" }}
@@ -88,6 +100,7 @@ export default connect(
   },
   {
     guidelineFetch,
+    guidelineFetchDetail,
     guidelinePut,
     onGuidelineSelected,
   }
