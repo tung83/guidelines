@@ -18,6 +18,7 @@ const GuideMain = ({
   guidelineFetch,
   guidelinePut,
   guidelineFetchDetail,
+  onGuidelineSelected,
 }: any) => {
   const [selectedGuidelineName, setSelectedGuidelineName] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
@@ -39,7 +40,7 @@ const GuideMain = ({
     setSelectedOption(option);
     setSelectedGuidelineName(value as string);
     setOldText(value);
-    onGuidelineSelected(value.toString());
+    onGuidelineSelected(guidelineList.find((x) => x.key === option.key));
   };
   const findCurentNodeIndex = (): number => {
     return guidelineList.findIndex((x) => x.key === selectedOption.key);

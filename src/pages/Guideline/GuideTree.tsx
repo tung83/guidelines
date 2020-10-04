@@ -73,6 +73,7 @@ const renderTreeNodes = (
 };
 
 const GuideTree = ({
+  guidelineSelected,
   currentChildNodes,
   guideNodePut,
   guideNodePost,
@@ -107,10 +108,11 @@ const GuideTree = ({
   //move node
   useEffect(() => {
     if (nodeNavDirection) {
+      nodeNavTurn(null);
       moveNode(treeData, currentGuideNode, nodeNavDirection);
       setTreeData([...treeData]);
       setExpandedKeys(flatten(treeData));
-      nodeNavTurn(null);
+      guideNodePut(currentGuideNode.Id, currentGuideNode);
     }
   }, [nodeNavDirection]);
 
@@ -146,7 +148,7 @@ const GuideTree = ({
       Id: 0,
       Name: "",
       Order: order,
-      SupId: null,
+      SupId: guidelineSelected.Id,
       children: [],
     };
     treeData.push(newItem);
@@ -184,7 +186,7 @@ const GuideTree = ({
       expandedKeys={expandedKeys}
     >
       <TreeNode
-        key={`root-${newIndex}`}
+        key={"root"}
         title={
           <Button
             type="primary"
@@ -209,6 +211,7 @@ const GuideTree = ({
 export default connect(
   (state: any) => {
     return {
+      guidelineSelected: state.guideline.guidelineSelected,
       currentChildNodes: state.guideline.currentChildNodes,
       guideNodesInserted: state.guideNode.guideNodesInserted,
       currentGuideNode: state.guideNode.currentGuideNode,

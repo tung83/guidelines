@@ -32,9 +32,9 @@ export function guidelineDelete(id: number): BaseAction {
     id,
   };
 }
-export function onGuidelineSelected(id: string): BaseAction {
+export function onGuidelineSelected(payload: any): BaseAction {
   return {
     type: actions.ON_GUIDELINE_SELECTED,
-    id,
+    payload,
   };
 }

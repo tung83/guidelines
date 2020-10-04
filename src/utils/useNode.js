@@ -1,8 +1,11 @@
 export const flatten = (dataArray) => {
-  let x = dataArray?.reduce((accumulator, currentValue) => {
-    runFlatten(currentValue, accumulator);
-    return accumulator;
-  }, []);
+  let x = dataArray?.reduce(
+    (accumulator, currentValue) => {
+      runFlatten(currentValue, accumulator);
+      return accumulator;
+    },
+    ["root"]
+  );
   return x;
 };
 const runFlatten = (data, result) => {
@@ -64,16 +67,54 @@ export const moveNode = (dataArray, node, direction) => {
     if (childIndex !== -1) {
       swapPostion(supNode.children, childIndex, direction);
     }
+  } else if (direction === "out") {
+    let supNode = findNode(dataArray, (x) => x.Id === node.SupId);
+    if (!supNode) return;
+    let childIndex = supNode.children.findIndex((x) => x.Id === node.Id);
+    supNode.children.splice(childIndex, 1);
+    let grandParentNode = findNode(dataArray, (x) => x.Id === supNode.SupId);
+    if (!grandParentNode) {
+      const lastNode = dataArray[dataArray.length - 1];
+      node.Order = lastNode.Order + 1;
+      node.SupId = lastNode.SupId;
+      dataArray.push(node);
+    } else {
+      node.Order =
+        grandParentNode.children[grandParentNode.children.length - 1].Order + 1;
+      node.SupId = grandParentNode.Id;
+      grandParentNode.children.push(node);
+    }
+  } else if (direction === "in") {
+    debugger;
+    let supNode = findNode(dataArray, (x) => x.Id === node.SupId);
+    if (!supNode) return;
+    let childIndex = supNode.children.findIndex((x) => x.Id === node.Id);
+    if (childIndex > 0) {
+      supNode.children.splice(childIndex, 1);
+      const previousNode = supNode.children[childIndex - 1];
+      if (!previousNode.children) previousNode.children = [];
+
+      node.Order =
+        previousNode.children.length === 0
+          ? 1
+          : previousNode.children[previousNode.children.length - 1].Order + 1;
+      node.SupId = previousNode.Id;
+      previousNode.children.push(node);
+    }
   }
 };
 const swapPostion = (array, index, direction) => {
   if (direction === "up") {
-    array[index - 1].Order++;
-    array[index].Order--;
+    if (index > 0) {
+      array[index - 1].Order++;
+      array[index].Order--;
+    }
   }
   if (direction === "down") {
-    array[index + 1].Order--;
-    array[index].Order++;
+    if (index < array.length - 1) {
+      array[index + 1].Order--;
+      array[index].Order++;
+    }
   }
 };
 export const orderNode = (dataArray) => {

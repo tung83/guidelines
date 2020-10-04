@@ -5,12 +5,12 @@ import { NodeData } from "../../model";
 export interface IGuidelineState {
   guidelines: NodeData[];
   currentChildNodes: NodeData[] | [];
-  onGuidelineSelected: number | string;
+  guidelineSelected: NodeData | null;
 }
 const initialState = {
   guidelines: [],
   currentChildNodes: [],
-  onGuidelineSelected: -1,
+  guidelineSelected: null,
 };
 
 export default function guidelineReducer(
@@ -23,7 +23,7 @@ export default function guidelineReducer(
     case actions.GUIDELINE_FETCH_DETAIL_RECEIVED:
       return { ...state, ...{ currentChildNodes: action.payload } };
     case actions.ON_GUIDELINE_SELECTED:
-      return { ...state, ...{ onGuidelineSelected: action.id } };
+      return { ...state, ...{ guidelineSelected: action.payload } };
 
     default:
       return state;

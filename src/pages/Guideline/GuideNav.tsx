@@ -17,12 +17,12 @@ const GuideNav = ({ nodeNavTurn }: any) => {
         <Button
           type="primary"
           icon={<LeftOutlined />}
-          onClick={(e: any) => nodeNavTurn("left")}
+          onClick={(e: any) => nodeNavTurn("out")}
         />
         <Button
           type="primary"
           icon={<RightOutlined />}
-          onClick={(e: any) => nodeNavTurn("right")}
+          onClick={(e: any) => nodeNavTurn("in")}
         />
       </div>
       <div className="up-down-nav">
