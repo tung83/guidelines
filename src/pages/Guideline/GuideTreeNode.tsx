@@ -18,6 +18,9 @@ const GuideTreeNode = ({
   useEffect(() => {
     setNameValue(item.Name);
     setOldText(item.Name);
+    if (currentGuideNode && item.key === currentGuideNode.key) {
+      setCheckedValue(true);
+    }
   }, [item]);
 
   // reset checkbox
@@ -28,7 +31,6 @@ const GuideTreeNode = ({
   }, [currentGuideNode]);
 
   const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
-    debugger;
     setCheckedValue(!checkedValue);
     handleItemCheckChanged(item);
   };

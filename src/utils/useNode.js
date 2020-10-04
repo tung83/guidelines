@@ -7,10 +7,11 @@ export const flatten = (dataArray) => {
 };
 const runFlatten = (data, result) => {
   if (!data) return;
-  if (data.children == null || data.children?.length === 0) {
-    result.push(data.Id.toString());
-  }
-  runFlatten(data.children, result);
+  result.push(`${data.key}-${data.Order}`);
+  return data.children?.reduce((accumulator, currentValue) => {
+    runFlatten(currentValue, accumulator);
+    return accumulator;
+  }, result);
 };
 
 export const findNode = (dataArray, predicator) => {
@@ -48,4 +49,41 @@ const runFindNode = (data, predicator) => {
       if (itemFound) return itemFound;
     }
   }
+};
+
+export const moveNode = (dataArray, node, direction) => {
+  if (direction === "up" || direction === "down") {
+    let level1Index = dataArray.findIndex((x) => x.Id === node.Id);
+    if (level1Index !== -1) {
+      swapPostion(dataArray, level1Index, direction);
+      return;
+    }
+    let supNode = findNode(dataArray, (x) => x.Id === node.SupId);
+    if (!supNode || !supNode.children) return;
+    let childIndex = supNode?.children.findIndex((x) => x.Id === node.Id);
+    if (childIndex !== -1) {
+      swapPostion(supNode.children, childIndex, direction);
+    }
+  }
+};
+const swapPostion = (array, index, direction) => {
+  if (direction === "up") {
+    array[index - 1].Order++;
+    array[index].Order--;
+  }
+  if (direction === "down") {
+    array[index + 1].Order--;
+    array[index].Order++;
+  }
+};
+export const orderNode = (dataArray) => {
+  const result = dataArray.sort((a, b) => {
+    if (a.Order < b.Order) return -1;
+    if (a.Order > b.Order) return 1;
+    return 0;
+  });
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].children) result[i].children = orderNode(result[i].children);
+  }
+  return result;
 };

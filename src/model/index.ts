@@ -1,11 +1,10 @@
 export interface NodeData {
   key: string;
   Id: number;
-  SupId: number;
+  SupId: number | null;
   Name: string;
   Order: number;
   children: Node[];
-  NodeContent: NodeContent;
 }
 export interface NodeContent {
   nodeId: number;

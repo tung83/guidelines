@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "antd";
+import { nodeNavTurn } from "../../store/nodeNav/action";
 import {
   RightOutlined,
   LeftOutlined,
@@ -7,19 +8,44 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import "./Guideline.css";
+import { connect } from "react-redux";
 
-const GuideNav = () => {
+const GuideNav = ({ nodeNavTurn }: any) => {
   return (
     <React.Fragment>
       <div className="left-right-nav">
-        <Button type="primary" icon={<LeftOutlined />} />
-        <Button type="primary" icon={<RightOutlined />} />
+        <Button
+          type="primary"
+          icon={<LeftOutlined />}
+          onClick={(e: any) => nodeNavTurn("left")}
+        />
+        <Button
+          type="primary"
+          icon={<RightOutlined />}
+          onClick={(e: any) => nodeNavTurn("right")}
+        />
       </div>
       <div className="up-down-nav">
-        <Button type="primary" icon={<UpOutlined />} />
-        <Button type="primary" icon={<DownOutlined />} />
+        <Button
+          type="primary"
+          icon={<UpOutlined />}
+          onClick={(e: any) => nodeNavTurn("up")}
+        />
+        <Button
+          type="primary"
+          icon={<DownOutlined />}
+          onClick={(e: any) => nodeNavTurn("down")}
+        />
       </div>
     </React.Fragment>
   );
 };
-export default GuideNav;
+
+export default connect(
+  (state: any) => {
+    return {};
+  },
+  {
+    nodeNavTurn,
+  }
+)(GuideNav);
