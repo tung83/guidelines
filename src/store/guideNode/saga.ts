@@ -21,7 +21,7 @@ function* guideNodePostAsync(action: BaseAction) {
   let { data } = yield call(post, baseUrl, action.payload);
   yield put({
     type: actions.GUIDE_NODE_INSERT_RECEIVED,
-    payload: data,
+    payload: { ...data, key: action.payload.key },
   });
 }
 

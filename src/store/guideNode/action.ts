@@ -5,6 +5,12 @@ export const guideNodeFetch = (): BaseAction => {
     type: actions.GUIDE_NODE_FETCH,
   };
 };
+export const guideNodeSetCurrent = (payload: any): BaseAction => {
+  return {
+    type: actions.GUIDE_NODE_CONTENT_CHECKED_NODE,
+    payload: payload,
+  };
+};
 export const guideNodePost = (payload: any): BaseAction => {
   return {
     type: actions.GUIDE_NODE_POST,

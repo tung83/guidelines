@@ -8,17 +8,20 @@ import {
 
 const HtmlEditor = ({
   currentGuideNodeContent,
-  currentGuideNodeContentId,
+  currentGuideNode,
   guideNodeContentPut,
   guideNodeContentPost,
 }: any) => {
   const [editorState, setEditorState] = useState("");
-  useEffect(() => {
-    setEditorState(
-      currentGuideNodeContent == null ? "" : currentGuideNodeContent.Content
-    );
-  }, [currentGuideNodeContent]);
   const [oldText, setOldText] = useState<any>();
+  useEffect(() => {
+    const htmlText =
+      currentGuideNodeContent == null || !currentGuideNodeContent.Content
+        ? ""
+        : currentGuideNodeContent.Content;
+    setEditorState(htmlText);
+    setOldText(htmlText);
+  }, [currentGuideNodeContent]);
 
   const handleEditorChange = (content: any, editor: any) => {
     setEditorState(content);
@@ -34,17 +37,13 @@ const HtmlEditor = ({
             Content: editorState,
           })
         : guideNodeContentPost({
-            NodeId: currentGuideNodeContentId,
+            NodeId: currentGuideNode.Id,
             Id: 0,
             Content: editorState,
           });
     }
   };
-  const handleFocus = (event: any) => {
-    if (oldText !== editorState) {
-      setOldText(event.target.value);
-    }
-  };
+  const handleFocus = (event: any) => {};
   return (
     <Editor
       value={editorState}
@@ -70,8 +69,7 @@ export default connect(
   (state: any) => {
     return {
       currentGuideNodeContent: state.guideNodeContent.currentGuideNodeContent,
-      currentGuideNodeContentId:
-        state.guideNodeContent.currentGuideNodeContentId,
+      currentGuideNode: state.guideNode.currentGuideNode,
     };
   },
   {

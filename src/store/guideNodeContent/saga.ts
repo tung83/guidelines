@@ -6,7 +6,6 @@ const baseUrl = "nodecontents";
 
 function* guideNodeContentFetchDetailAsync(action: BaseAction) {
   let { data } = yield call(get, `${baseUrl}/${action.id}`);
-
   yield put({
     type: actions.GUIDE_NODE_CONTENT_FETCH_DETAIL_RECEIVED,
     payload: data,

@@ -7,6 +7,7 @@ import {
   guideNodePost,
   guideNodeDelete,
   resetGuideNodesInserted,
+  guideNodeSetCurrent,
 } from "../../store/guideNode/action";
 import { guideNodeContentFetchDetail } from "../../store/guideNodeContent/action";
 import { findNode, flatten, removeNode } from "utils/useArray";
@@ -55,7 +56,7 @@ const renderTreeNodes = (
           handleAddNewNode,
           handleDeleteNode,
           handleItemNameChanged,
-          (handleItemCheckChanged = { handleItemCheckChanged })
+          handleItemCheckChanged
         )}
       </TreeNode>
     );
@@ -69,22 +70,22 @@ const GuideTree = ({
   guideNodeDelete,
   guideNodesInserted,
   guideNodeContentFetchDetail,
+  guideNodeSetCurrent,
 }: any) => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
 
   useEffect(() => {
-    setTreeData(currentChildNodes.map((x: NodeData) => ({ ...x, key: x.Id })));
+    setTreeData(
+      currentChildNodes.map((x: NodeData) => ({ ...x, key: x.Id.toString() }))
+    );
     setExpandedKeys(flatten(currentChildNodes));
   }, [currentChildNodes]);
   // update childnode of newly inserted
   useEffect(() => {
     guideNodesInserted.forEach((x: NodeData) => {
-      let foundNode = findNode(
-        treeData,
-        (y: NodeData) => y.SupId === x.SupId && y.Order === x.Order
-      );
+      let foundNode = findNode(treeData, (y: NodeData) => y.key === x.key);
       foundNode.Id = x.Id;
     });
     setTreeData([...treeData]);
@@ -101,16 +102,14 @@ const GuideTree = ({
         ? 1
         : parent.children[parent.children.length - 1].Order;
     const newItem = {
+      key: newKey,
       Id: 0,
       Name: "",
       Order: order + 1,
       SupId: parent.Id,
       children: [],
     };
-    parent.children.push({
-      key: newKey,
-      ...newItem,
-    });
+    parent.children.push(newItem);
     setTreeData([...treeData]);
     setExpandedKeys([...expandedKeys, newKey]);
     guideNodePost(newItem);
@@ -125,6 +124,7 @@ const GuideTree = ({
   };
   const handleItemCheckChanged = (node: any) => {
     guideNodeContentFetchDetail(node.Id);
+    guideNodeSetCurrent(node);
   };
 
   const onExpand = (newExpandedKeys: any) => {
@@ -161,5 +161,6 @@ export default connect(
     guideNodeDelete,
     resetGuideNodesInserted,
     guideNodeContentFetchDetail,
+    guideNodeSetCurrent,
   }
 )(GuideTree);

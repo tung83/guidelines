@@ -3,12 +3,6 @@ import { connect } from "react-redux";
 import { Input, Button, Checkbox } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
-import {
-  guideNodeFetch,
-  guideNodePut,
-  guideNodePost,
-  guideNodeDelete,
-} from "../../store/guideNode/action";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 const GuideTreeNode = ({
   item,
@@ -16,15 +10,26 @@ const GuideTreeNode = ({
   handleDeleteNode,
   handleItemNameChanged,
   handleItemCheckChanged,
+  currentGuideNode,
 }: any) => {
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
+  const [checkedValue, setCheckedValue] = useState(false);
   useEffect(() => {
     setNameValue(item.Name);
     setOldText(item.Name);
   }, [item]);
+
+  // reset checkbox
+  useEffect(() => {
+    if (checkedValue && item.key !== currentGuideNode.key) {
+      setCheckedValue(false);
+    }
+  }, [currentGuideNode]);
+
   const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
-    console.log(`checked = ${e.target.checked}`);
+    debugger;
+    setCheckedValue(!checkedValue);
     handleItemCheckChanged(item);
   };
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +37,7 @@ const GuideTreeNode = ({
   };
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (oldText !== nameValue) {
+      setOldText(nameValue);
       handleItemNameChanged({ ...item, Name: nameValue });
     }
   };
@@ -46,6 +52,7 @@ const GuideTreeNode = ({
       />
       <Checkbox
         className="tree-node-guide-checkbox"
+        checked={checkedValue}
         onChange={handleChangeCheckbox}
       />
       <Input
@@ -64,17 +71,8 @@ const GuideTreeNode = ({
     </div>
   );
 };
-export default connect(
-  (state: any) => {
-    return {
-      currentChildNodes: state.guideline.currentChildNodes,
-      onGuidelineSelected: state.guideline.onGuidelineSelected,
-    };
-  },
-  {
-    guideNodeFetch,
-    guideNodePost,
-    guideNodePut,
-    guideNodeDelete,
-  }
-)(GuideTreeNode);
+export default connect((state: any) => {
+  return {
+    currentGuideNode: state.guideNode.currentGuideNode,
+  };
+}, {})(GuideTreeNode);

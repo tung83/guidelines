@@ -1,17 +1,17 @@
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
-import { NodeData, NodeContent } from "../../model";
+import { NodeData } from "../../model";
 
 const initialState = {
   guideNodes: [],
   guideNodesInserted: [],
-  currentGuideNodeContent: null,
+  currentGuideNode: null,
 };
 
 export interface IGuideNodeState {
   guideNodes: NodeData[];
   guideNodesInserted: NodeData[];
-  currentGuideNodeContent: NodeContent | null;
+  currentGuideNode: NodeData | null;
 }
 export default function guideNodeReducer(
   state: IGuideNodeState = initialState,
@@ -32,6 +32,13 @@ export default function guideNodeReducer(
         ...state,
         ...{
           guideNodesInserted: [],
+        },
+      };
+    case actions.GUIDE_NODE_CONTENT_CHECKED_NODE:
+      return {
+        ...state,
+        ...{
+          currentGuideNode: action.payload,
         },
       };
     default:

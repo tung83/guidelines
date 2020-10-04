@@ -28,7 +28,9 @@ const GuideMain = ({
     guidelineFetch();
   }, []);
   useEffect(() => {
-    setGuidelineList(guidelines);
+    setGuidelineList(
+      guidelines.map((x: any) => ({ ...x, key: x.Id.toString() }))
+    );
   }, [guidelines]);
 
   const changeGuidelineSelect = (value: SelectValue, option: any) => {
@@ -40,7 +42,7 @@ const GuideMain = ({
     onGuidelineSelected(value.toString());
   };
   const findCurentNodeIndex = (): number => {
-    return guidelineList.findIndex((x) => x.Id === Number(selectedOption.key));
+    return guidelineList.findIndex((x) => x.key === selectedOption.key);
   };
   const handleTextChanged = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectedGuidelineName(event.target.value);
@@ -76,7 +78,7 @@ const GuideMain = ({
           }
         >
           {guidelineList?.map((x: any) => (
-            <Option value={x.Name} key={x.Id}>
+            <Option value={x.Name} key={x.key}>
               {x.Name}
             </Option>
           ))}
