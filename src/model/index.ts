@@ -1,12 +1,12 @@
 export interface NodeData {
   key: string;
-  Id: number;
-  SupId: number | null;
-  Name: string;
-  Order: number;
-  children: Node[];
+  _id: string;
+  supId: string | null;
+  name: string;
+  order: number;
+  subNodes: NodeData[];
 }
 export interface NodeContent {
   nodeId: number;
-  Content: string;
+  content: string;
 }

@@ -17,14 +17,20 @@ export const guideNodePost = (payload: any): BaseAction => {
     payload: payload,
   };
 };
-export const guideNodePut = (id: number, payload: any): BaseAction => {
+export const guideNodePut = (payload: any): BaseAction => {
   return {
     type: actions.GUIDE_NODE_PUT,
     payload: payload,
-    id: id,
   };
 };
-export const guideNodeDelete = (id: number): BaseAction => {
+export const guideNodeLocationPut = (payload: any): BaseAction => {
+  return {
+    type: actions.GUIDE_NODE_LOCATION_PUT,
+    payload: payload,
+  };
+};
+
+export const guideNodeDelete = (id: string): BaseAction => {
   return {
     type: actions.GUIDE_NODE_DELETE,
     id: id,

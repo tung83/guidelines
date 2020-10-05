@@ -6,6 +6,7 @@ import "./Guideline.css";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   guideNodePut,
+  guideNodeLocationPut,
   guideNodePost,
   guideNodeDelete,
   resetGuideNodesInserted,
@@ -22,19 +23,27 @@ import {
 import GuideTreeNode from "./GuideTreeNode";
 import { NodeData } from "model";
 const { TreeNode } = Tree;
-const renderTreeNodes = (
-  data: any,
-  handleAddNewNode: any,
-  handleDeleteNode: any,
-  handleItemNameChanged: any,
-  handleItemCheckChanged: any
-): any => {
-  const orderedData = orderNode(data);
-  return orderedData.map((item: any) => {
-    if (!item.children || item.children.length === 0) {
+
+export interface TreeNodesProps {
+  treeNodes: NodeData[];
+  handleAddNewNode: any;
+  handleDeleteNode: any;
+  handleItemNameChanged: any;
+  handleItemCheckChanged: any;
+}
+const renderTreeNodes = ({
+  treeNodes,
+  handleAddNewNode,
+  handleDeleteNode,
+  handleItemNameChanged,
+  handleItemCheckChanged,
+}: TreeNodesProps): any => {
+  const orderedData = orderNode(treeNodes);
+  return orderedData.map((item) => {
+    if (!item.subNodes || item.subNodes.length === 0) {
       return (
         <TreeNode
-          key={`${item.key}-${item.Order}`}
+          key={`${item.key}-${item.order}`}
           title={
             <GuideTreeNode
               item={item}
@@ -49,7 +58,7 @@ const renderTreeNodes = (
     }
     return (
       <TreeNode
-        key={`${item.key}-${item.Order}`}
+        key={`${item.key}-${item.order}`}
         title={
           <GuideTreeNode
             item={item}
@@ -60,22 +69,37 @@ const renderTreeNodes = (
           />
         }
       >
-        {renderTreeNodes(
-          item.children,
+        {renderTreeNodes({
+          treeNodes: item.subNodes,
           handleAddNewNode,
           handleDeleteNode,
           handleItemNameChanged,
-          handleItemCheckChanged
-        )}
+          handleItemCheckChanged,
+        })}
       </TreeNode>
     );
   });
 };
 
+export interface GuideTreeProps {
+  guidelineSelected: NodeData;
+  currentChildNodes: NodeData[];
+  guideNodePut: any;
+  guideNodeLocationPut: any;
+  guideNodePost: any;
+  guideNodeDelete: any;
+  guideNodesInserted: NodeData[];
+  guideNodeContentFetchDetail: any;
+  guideNodeSetCurrent: any;
+  nodeNavDirection: string;
+  currentGuideNode: NodeData;
+  nodeNavTurn: any;
+}
 const GuideTree = ({
   guidelineSelected,
   currentChildNodes,
   guideNodePut,
+  guideNodeLocationPut,
   guideNodePost,
   guideNodeDelete,
   guideNodesInserted,
@@ -84,7 +108,7 @@ const GuideTree = ({
   nodeNavDirection,
   currentGuideNode,
   nodeNavTurn,
-}: any) => {
+}: GuideTreeProps) => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
@@ -92,7 +116,7 @@ const GuideTree = ({
   useEffect(() => {
     const dataList = currentChildNodes.map((x: NodeData) => ({
       ...x,
-      key: x.Id.toString(),
+      key: x._id,
     }));
     setTreeData(dataList);
     setExpandedKeys(flatten(dataList));
@@ -101,7 +125,10 @@ const GuideTree = ({
   useEffect(() => {
     guideNodesInserted.forEach((x: NodeData) => {
       let foundNode = findNode(treeData, (y: NodeData) => y.key === x.key);
-      foundNode.Id = x.Id;
+      if (foundNode) {
+        foundNode._id = x._id;
+        foundNode.key = x._id;
+      }
     });
     setTreeData([...treeData]);
   }, [guideNodesInserted]);
@@ -109,32 +136,38 @@ const GuideTree = ({
   useEffect(() => {
     if (nodeNavDirection) {
       nodeNavTurn(null);
-      moveNode(treeData, currentGuideNode, nodeNavDirection);
+      let movedNodes = moveNode(treeData, currentGuideNode, nodeNavDirection);
       setTreeData([...treeData]);
       setExpandedKeys(flatten(treeData));
-      guideNodePut(currentGuideNode.Id, currentGuideNode);
+      guideNodeLocationPut(
+        movedNodes?.map((x) => ({
+          _id: x._id,
+          supId: x.supId,
+          order: x.order,
+        }))
+      );
     }
   }, [nodeNavDirection]);
 
-  const handleAddNewNode = (parent: any) => {
-    if (!parent.children) {
-      parent.children = [];
+  const handleAddNewNode = (parent: NodeData) => {
+    if (!parent.subNodes) {
+      parent.subNodes = [];
     }
     setNewIndex(newIndex - 1);
     const newKey = `${newIndex - 1}`;
     const order =
-      parent.children.length === 0
+      parent.subNodes.length === 0
         ? 1
-        : parent.children[parent.children.length - 1].Order;
+        : parent.subNodes[parent.subNodes.length - 1].order;
     const newItem: NodeData = {
       key: newKey,
-      Id: 0,
-      Name: "",
-      Order: order + 1,
-      SupId: parent.Id,
-      children: [],
+      _id: newKey,
+      name: "",
+      order: order + 1,
+      supId: parent._id,
+      subNodes: [],
     };
-    parent.children.push(newItem);
+    parent.subNodes.push(newItem);
     processAddNewNode(treeData, newItem);
   };
 
@@ -142,49 +175,41 @@ const GuideTree = ({
     setNewIndex(newIndex - 1);
     const newKey = `${newIndex - 1}`;
     const order =
-      treeData.length === 0 ? 1 : treeData[treeData.length - 1].Order + 1;
+      treeData.length === 0 ? 1 : treeData[treeData.length - 1].order + 1;
     const newItem: NodeData = {
       key: newKey,
-      Id: 0,
-      Name: "",
-      Order: order,
-      SupId: guidelineSelected.Id,
-      children: [],
+      _id: newKey,
+      name: "",
+      order: order,
+      supId: guidelineSelected._id,
+      subNodes: [],
     };
     treeData.push(newItem);
     processAddNewNode(treeData, newItem);
   };
-  const processAddNewNode = (newTreeData: any, newItem: NodeData) => {
+  const processAddNewNode = (newTreeData: NodeData[], newItem: NodeData) => {
     setTreeData([...newTreeData]);
-    setExpandedKeys([...expandedKeys, `${newItem.key}-${newItem.Order}`]);
-    guideNodePost(newItem);
+    setExpandedKeys([...expandedKeys, `${newItem.key}-${newItem.order}`]);
+    guideNodePost({ supId: newItem.supId, order: newItem.order });
   };
-  const handleDeleteNode = (node: any) => {
-    guideNodeDelete(node.Id);
+  const handleDeleteNode = (node: NodeData) => {
+    guideNodeDelete(node._id);
     removeNode(treeData, node);
     setTreeData([...treeData]);
   };
-  const handleItemNameChanged = (node: any) => {
+  const handleItemNameChanged = (node: NodeData) => {
     let foundNode = findNode(treeData, (y: NodeData) => y.key === node.key);
-    foundNode.Name = node.Name;
+    if (foundNode) foundNode.name = node.name;
     setTreeData([...treeData]);
-    guideNodePut(node.Id, node);
+    guideNodePut({ _id: node._id, name: node.name });
   };
-  const handleItemCheckChanged = (node: any) => {
-    guideNodeContentFetchDetail(node.Id);
+  const handleItemCheckChanged = (node: NodeData) => {
+    guideNodeContentFetchDetail(node._id);
     guideNodeSetCurrent(node);
   };
 
-  const onExpand = (newExpandedKeys: any) => {
-    console.log("onExpand", newExpandedKeys);
-  };
-
   return (
-    <Tree
-      onExpand={onExpand}
-      switcherIcon={<div />}
-      expandedKeys={expandedKeys}
-    >
+    <Tree switcherIcon={<div />} expandedKeys={expandedKeys}>
       <TreeNode
         key={"root"}
         title={
@@ -196,13 +221,13 @@ const GuideTree = ({
           />
         }
       >
-        {renderTreeNodes(
-          treeData,
+        {renderTreeNodes({
+          treeNodes: treeData,
           handleAddNewNode,
           handleDeleteNode,
           handleItemNameChanged,
-          handleItemCheckChanged
-        )}
+          handleItemCheckChanged,
+        })}
       </TreeNode>
     </Tree>
   );
@@ -221,6 +246,7 @@ export default connect(
   {
     guideNodePost,
     guideNodePut,
+    guideNodeLocationPut,
     guideNodeDelete,
     resetGuideNodesInserted,
     guideNodeContentFetchDetail,

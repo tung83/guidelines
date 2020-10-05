@@ -4,6 +4,16 @@ import { Input, Button, Checkbox } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { NodeData } from "model";
+
+export interface GuideTreeNodeProps {
+  item: NodeData;
+  handleAddNewNode: any;
+  handleDeleteNode: any;
+  handleItemNameChanged: any;
+  handleItemCheckChanged: any;
+  currentGuideNode: NodeData;
+}
 const GuideTreeNode = ({
   item,
   handleAddNewNode,
@@ -11,13 +21,13 @@ const GuideTreeNode = ({
   handleItemNameChanged,
   handleItemCheckChanged,
   currentGuideNode,
-}: any) => {
+}: GuideTreeNodeProps) => {
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
   const [checkedValue, setCheckedValue] = useState(false);
   useEffect(() => {
-    setNameValue(item.Name);
-    setOldText(item.Name);
+    setNameValue(item.name);
+    setOldText(item.name);
     if (currentGuideNode && item.key === currentGuideNode.key) {
       setCheckedValue(true);
     }
@@ -40,7 +50,7 @@ const GuideTreeNode = ({
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     if (oldText !== nameValue) {
       setOldText(nameValue);
-      handleItemNameChanged({ ...item, Name: nameValue });
+      handleItemNameChanged({ ...item, name: nameValue });
     }
   };
 

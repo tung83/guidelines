@@ -10,8 +10,9 @@ import {
 
 const http = axios.create({
   baseURL: API_URL,
+  Accept: "application/json",
+  "Content-Type": "application/json",
   timeout: 20000,
-  withCredentials: true,
 });
 const handleNetworkError = (err) => {
   message.error(`Error sending request: ${err}`);
