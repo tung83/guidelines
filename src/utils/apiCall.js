@@ -14,11 +14,7 @@ const http = axios.create({
   withCredentials: true,
 });
 const handleNetworkError = (err) => {
-  // if (reloadToHomePage(err)) return
-  // if (NODE_ENV !== 'production') {
-  //   // Raw error should not make it to production
-  //   console.error(err.response || err)
-  // }
+  message.error(`Error sending request: ${err}`);
   return {
     success: false,
   };
@@ -54,21 +50,18 @@ export const get = async (url, config) => {
 
 export const put = async (url, payload, config) => {
   var result = await callApi(http.put(url, payload, config));
-  message.success("Sửa dữ liệu thành công");
   store.dispatch(finishSavingData());
   return result;
 };
 
 export const post = async (url, payload, config) => {
   var result = await callApi(http.post(url, payload, config));
-  message.success("Thêm dữ liệu thành công");
   store.dispatch(finishSavingData(result.data));
   return result;
 };
 
 export const del = async (url, payload) => {
   var result = await callApi(http.delete(url, payload));
-  message.success("Xóa dữ liệu thành công");
   store.dispatch(finishSavingData());
   return result;
 };
