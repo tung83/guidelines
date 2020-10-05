@@ -1,3 +1,4 @@
+import { Spin } from "antd";
 import React, { FC, useState } from "react";
 import "./AppSpint.css";
 
