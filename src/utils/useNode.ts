@@ -149,3 +149,14 @@ export const orderNode = (treeNodes: NodeData[]): NodeData[] => {
   }
   return result;
 };
+export const updateNodeKey = (treeNodes: NodeData[]): NodeData[] => {
+  let result = treeNodes.map((x: NodeData) => ({
+    ...x,
+    key: x._id,
+  }));
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].subNodes)
+      result[i].subNodes = updateNodeKey(result[i].subNodes);
+  }
+  return result;
+};

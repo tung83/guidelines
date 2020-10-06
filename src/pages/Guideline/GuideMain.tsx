@@ -36,7 +36,7 @@ const GuideMain = ({
     guidelineFetch();
   }, []);
   useEffect(() => {
-    setGuidelineList(guidelines.map((x) => ({ ...x, key: x._id.toString() })));
+    setGuidelineList(guidelines.map((x) => ({ ...x, key: x._id })));
   }, [guidelines]);
 
   const changeGuidelineSelect = (value: SelectValue, option: any) => {
@@ -75,7 +75,7 @@ const GuideMain = ({
           value={selectedValue}
           optionFilterProp="children"
           onChange={changeGuidelineSelect}
-          dropdownStyle={{ minWidth: "500px" }}
+          dropdownStyle={{ minWidth: "300px" }}
           filterOption={(input, option) =>
             option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }

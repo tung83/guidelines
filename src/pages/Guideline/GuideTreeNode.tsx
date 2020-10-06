@@ -70,7 +70,7 @@ const GuideTreeNode = ({
       <Input
         className="tree-node-guide-text"
         value={nameValue}
-        placeholder="Guideline name"
+        placeholder="Tiêu đề node"
         onChange={handleChangeName}
         onBlur={handleBlur}
       />

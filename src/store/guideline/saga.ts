@@ -1,5 +1,5 @@
-import { get, post, put as putApi, del } from "utils/apiCall";
-import { put, call, takeLatest, takeEvery } from "redux-saga/effects";
+import { get } from "utils/apiCall";
+import { put, call, takeLatest } from "redux-saga/effects";
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
 const baseUrl = "node";
@@ -21,7 +21,7 @@ function* watchGuidelineAsync() {
 function* guidelineFetchDetailAsync(action: BaseAction) {
   let data = null;
   if (action.id) {
-    let result = yield call(get, `${baseUrl}?supId=${action.id}`);
+    let result = yield call(get, `${baseUrl}/all?supId=${action.id}`);
     data = result.data;
   }
   yield put({

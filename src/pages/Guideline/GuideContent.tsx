@@ -39,10 +39,11 @@ const GuideContent = ({
   const handleFocus = (event: any) => {};
   return (
     <Editor
+      disabled={currentGuideNodeContent == null}
       value={editorState}
       initialValue="<p>This is the initial content of the editor</p>"
       init={{
-        height: 500,
+        height: "calc(100vh - 102px)",
         menubar: false,
         plugins: [
           "advlist autolink lists link image charmap print preview anchor",

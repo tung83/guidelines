@@ -1,8 +1,16 @@
 /* guideline layout */
 .guide-layout {
-  margin: 50px 50px;
+  padding: 50px 50px;
 }
-
+.guide-nav-col {
+  width: 220px;
+}
+.guide-tree-col {
+  width: 480px;
+}
+.guide-content-col {
+  flex: 1;
+}
 /* navigator */
 .left-right-nav {
   margin-right: 5px;
@@ -50,3 +58,7 @@
 /* .tox-statusbar__branding {
   display: none;
 } */
+#noteView > div {
+  height: 100% !important;
+  overflow: hidden !important;
+}

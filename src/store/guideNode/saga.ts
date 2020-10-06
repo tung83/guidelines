@@ -1,5 +1,5 @@
-import { get, post, put as putApi, del } from "utils/apiCall";
-import { put, call, takeLatest, takeEvery } from "redux-saga/effects";
+import { post, put as putApi } from "utils/apiCall";
+import { put, call, takeEvery } from "redux-saga/effects";
 import * as actions from "store/actionNames";
 import { BaseAction } from "../common";
 const baseUrl = "node";
@@ -36,7 +36,7 @@ function* watchGuideNodeLocationPutAsync() {
 }
 // guideNodeDeleteAsync
 function* guideNodeDeleteAsync(action: BaseAction) {
-  yield call(del, `${baseUrl}/${action.id}`);
+  yield call(putApi, `${baseUrl}/delete`, { _id: action.id });
 }
 function* watchGuideNodeDeleteAsync() {
   yield takeEvery(actions.GUIDE_NODE_DELETE, guideNodeDeleteAsync);
