@@ -131,7 +131,6 @@ const GuideTree = ({
       let foundNode = findNode(treeData, (y: NodeData) => y.key === x.key);
       if (foundNode) {
         foundNode._id = x._id;
-        foundNode.key = x._id;
       }
     });
     setTreeData([...treeData]);
