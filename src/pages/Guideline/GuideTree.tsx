@@ -12,7 +12,10 @@ import {
   resetGuideNodesInserted,
   guideNodeSetCurrent,
 } from "../../store/guideNode/action";
-import { guideNodeContentFetchDetail } from "../../store/guideNodeContent/action";
+import {
+  guideNodeContentFetchDetail,
+  guideNodeContentReset,
+} from "../../store/guideNodeContent/action";
 import {
   findNode,
   flatten,
@@ -92,6 +95,7 @@ export interface GuideTreeProps {
   guideNodeDelete: any;
   guideNodesInserted: NodeData[];
   guideNodeContentFetchDetail: any;
+  guideNodeContentReset: any;
   guideNodeSetCurrent: any;
   nodeNavDirection: string;
   currentGuideNode: NodeData;
@@ -106,6 +110,7 @@ const GuideTree = ({
   guideNodeDelete,
   guideNodesInserted,
   guideNodeContentFetchDetail,
+  guideNodeContentReset,
   guideNodeSetCurrent,
   nodeNavDirection,
   currentGuideNode,
@@ -209,7 +214,11 @@ const GuideTree = ({
     guideNodePut({ _id: node._id, name: node.name });
   };
   const handleItemCheckChanged = (node: NodeData) => {
-    guideNodeContentFetchDetail(node._id);
+    if (node) {
+      guideNodeContentFetchDetail(node._id);
+    } else {
+      guideNodeContentReset();
+    }
     guideNodeSetCurrent(node);
   };
 
@@ -255,6 +264,7 @@ export default connect(
     guideNodeDelete,
     resetGuideNodesInserted,
     guideNodeContentFetchDetail,
+    guideNodeContentReset,
     guideNodeSetCurrent,
     nodeNavTurn,
   }

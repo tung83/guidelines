@@ -40,9 +40,10 @@ const GuideTreeNode = ({
     }
   }, [currentGuideNode]);
 
-  const handleChangeCheckbox = (e: CheckboxChangeEvent) => {
-    setCheckedValue(!checkedValue);
-    handleItemCheckChanged(item);
+  const handleChangeCheckboxTrigger = (e: any) => {
+    const newCheckedValue = !checkedValue;
+    setCheckedValue(newCheckedValue);
+    handleItemCheckChanged(newCheckedValue ? item : null);
   };
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameValue(e.target.value);
@@ -62,11 +63,13 @@ const GuideTreeNode = ({
         size={"small"}
         onClick={(e: any) => handleAddNewNode(item)}
       />
-      <Checkbox
-        className="tree-node-guide-checkbox"
-        checked={checkedValue}
-        onChange={handleChangeCheckbox}
-      />
+      <div className="checkbox-container">
+        <Checkbox className="tree-node-guide-checkbox" checked={checkedValue} />
+        <div
+          className="checkbox-action"
+          onClick={handleChangeCheckboxTrigger}
+        ></div>
+      </div>
       <Input
         className="tree-node-guide-text"
         value={nameValue}

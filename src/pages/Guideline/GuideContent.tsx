@@ -22,7 +22,6 @@ const GuideContent = ({
     setEditorState(htmlText);
     setOldText(htmlText);
   }, [currentGuideNodeContent]);
-
   const handleEditorChange = (content: any, editor: any) => {
     setEditorState(content);
   };
