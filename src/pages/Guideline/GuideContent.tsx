@@ -3,6 +3,7 @@ import { Editor } from "@tinymce/tinymce-react";
 import { connect } from "react-redux";
 import { guideNodeContentPut } from "../../store/guideNodeContent/action";
 import { NodeContent } from "../../model";
+import { TinyAPIKey } from "utils/constants";
 
 export interface GuideContentProps {
   currentGuideNodeContent: NodeContent;
@@ -13,7 +14,22 @@ const GuideContent = ({
   guideNodeContentPut,
 }: GuideContentProps) => {
   const [editorState, setEditorState] = useState("");
+  const [runInterval, setRunInterval] = useState(false);
+
   const [oldText, setOldText] = useState<any>();
+
+  useEffect(() => {
+    if (runInterval) {
+      setRunInterval(false);
+      saveTextChanged(null);
+    }
+  }, [runInterval]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRunInterval(true);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
   useEffect(() => {
     const htmlText =
       currentGuideNodeContent == null || !currentGuideNodeContent.content
@@ -27,7 +43,7 @@ const GuideContent = ({
   };
 
   const saveTextChanged = (event: any) => {
-    if (oldText !== editorState) {
+    if (oldText && oldText !== editorState) {
       setOldText(editorState);
       guideNodeContentPut({
         nodeId: currentGuideNodeContent.nodeId,
@@ -35,26 +51,28 @@ const GuideContent = ({
       });
     }
   };
-  const handleFocus = (event: any) => {};
   return (
     <Editor
+      apiKey={TinyAPIKey}
       disabled={currentGuideNodeContent == null}
       value={editorState}
       initialValue="<p>This is the initial content of the editor</p>"
       init={{
         height: "calc(100vh - 102px)",
-        menubar: false,
         plugins: [
-          "advlist autolink lists link image charmap print preview anchor",
-          "searchreplace visualblocks code fullscreen",
-          "insertdatetime media table paste code help wordcount",
+          "print preview paste importcss searchreplace directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons",
         ],
+        menubar: "file edit view insert format tools table help",
         toolbar:
-          "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+          "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
+
+        quickbars_selection_toolbar:
+          "bold italic | quicklink h2 h3 blockquote quickimage quicktable",
+        noneditable_noneditable_class: "mceNonEditable",
+        toolbar_sticky: true,
       }}
       onEditorChange={handleEditorChange}
       onBlur={saveTextChanged}
-      onFocus={handleFocus}
     />
   );
 };
