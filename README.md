@@ -1,5 +1,18 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## TinyMCE React
+Make sure you register account on www.tiny.cloud
+[Get  Your Tiny API Key](https://www.tiny.cloud/my-account/dashboard/) 
+Fulfil your site domain to remove warning [domain list](https://www.tiny.cloud/my-account/domains/) 
+
+[TinyMCE React integration quick start guide](https://www.tiny.cloud/docs/integrations/react/) 
+
+## Config area
+
+ Go to file src\utils\constants.js and change the api link and TinyAPIKey
+    export const API_URL = "https://api.bimdev.vn/api/";
+    export const TinyAPIKey = "o5zu7az4nwpkhp2pz1xn5oew3m5785w74nnjndhxt1shkbae";
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -27,18 +40,3 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

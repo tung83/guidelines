@@ -35,8 +35,9 @@ const GuideTreeNode = ({
 
   // reset checkbox
   useEffect(() => {
-    if (checkedValue && item.key !== currentGuideNode.key) {
-      setCheckedValue(false);
+    if (checkedValue) {
+      if (!currentGuideNode || item.key !== currentGuideNode.key)
+        setCheckedValue(false);
     }
   }, [currentGuideNode]);
 
