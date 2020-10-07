@@ -2,11 +2,6 @@ import axios from "axios";
 import store from "store";
 import { message } from "antd";
 import { API_URL } from "utils/constants";
-import {
-  increaseLoading,
-  decreaseLoading,
-  finishSavingData,
-} from "store/app/action";
 
 const http = axios.create({
   baseURL: API_URL,
@@ -35,13 +30,11 @@ const handleResponse = (response) => {
 
 export const callApi = async (action) => {
   try {
-    store.dispatch(increaseLoading());
     const response = await action;
     return handleResponse(response);
   } catch (err) {
     return handleNetworkError(err);
   } finally {
-    store.dispatch(decreaseLoading());
   }
 };
 
@@ -51,18 +44,15 @@ export const get = async (url, config) => {
 
 export const put = async (url, payload, config) => {
   var result = await callApi(http.put(url, payload, config));
-  store.dispatch(finishSavingData());
   return result;
 };
 
 export const post = async (url, payload, config) => {
   var result = await callApi(http.post(url, payload, config));
-  store.dispatch(finishSavingData(result.data));
   return result;
 };
 
 export const del = async (url, payload) => {
   var result = await callApi(http.delete(url, payload));
-  store.dispatch(finishSavingData());
   return result;
 };
