@@ -17,7 +17,10 @@ Fulfil your site domain to remove warning [domain list](https://www.tiny.cloud/m
 
 ## Available Scripts
 
+
 In the project directory, you can run:
+
+### `yarn install`
 
 ### `yarn start`
 
