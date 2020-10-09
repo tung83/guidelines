@@ -27,7 +27,7 @@ export function onGuidelineSelected(payload: any): BaseAction {
 
 export function onIsViewOnlyMode(isView: boolean): BaseAction {
   return {
-    type: actions.ON_GUIDELINE_SELECTED,
+    type: actions.ON_GUIDELINE_VIEW_MODE,
     payload: isView,
   };
 }

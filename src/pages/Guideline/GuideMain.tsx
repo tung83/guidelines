@@ -19,6 +19,7 @@ export interface GuideMainProps {
   guideNodePut: any;
   guidelineFetchDetail: any;
   onGuidelineSelected: any;
+  guidelineViewMode: boolean;
 }
 const GuideMain = ({
   guidelines,
@@ -26,6 +27,7 @@ const GuideMain = ({
   guideNodePut,
   guidelineFetchDetail,
   onGuidelineSelected,
+  guidelineViewMode,
 }: GuideMainProps) => {
   const [selectedGuidelineName, setSelectedGuidelineName] = useState("");
   const [selectedOption, setSelectedOption] = useState<any>();
@@ -64,7 +66,6 @@ const GuideMain = ({
       guideNodePut({ _id: selectedOption.key, name: selectedGuidelineName });
     }
   };
-
   return (
     <section className="panel-box">
       <div className="panel-box-title">Guidline</div>
@@ -86,12 +87,14 @@ const GuideMain = ({
             </Option>
           ))}
         </Select>
-        <Input
-          value={selectedGuidelineName}
-          placeholder="Guideline name"
-          onChange={handleTextChanged}
-          onBlur={saveTextChanged}
-        />
+        {!guidelineViewMode && (
+          <Input
+            value={selectedGuidelineName}
+            placeholder="Guideline name"
+            onChange={handleTextChanged}
+            onBlur={saveTextChanged}
+          />
+        )}
       </div>
     </section>
   );
@@ -101,6 +104,7 @@ export default connect(
     return {
       guidelines: state.guideline.guidelines,
       currentGuideline: state.guideline.currentGuideline,
+      guidelineViewMode: state.guideline.guidelineViewMode,
     };
   },
   {

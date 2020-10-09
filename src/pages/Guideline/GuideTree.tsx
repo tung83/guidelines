@@ -26,6 +26,7 @@ import {
 } from "../../utils/useNode";
 import GuideTreeNode from "./GuideTreeNode";
 import { NodeData } from "model";
+import { EventDataNode } from "antd/lib/tree";
 const { TreeNode } = Tree;
 
 export interface TreeNodesProps {
@@ -100,6 +101,7 @@ export interface GuideTreeProps {
   nodeNavDirection: string;
   currentGuideNode: NodeData;
   nodeNavTurn: any;
+  guidelineViewMode: boolean;
 }
 const GuideTree = ({
   guidelineSelected,
@@ -115,6 +117,7 @@ const GuideTree = ({
   nodeNavDirection,
   currentGuideNode,
   nodeNavTurn,
+  guidelineViewMode,
 }: GuideTreeProps) => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
@@ -177,6 +180,7 @@ const GuideTree = ({
   };
 
   const handleAddNewNodeInRoot = () => {
+    if (!guidelineSelected) return;
     setNewIndex(newIndex - 1);
     const newKey = `${newIndex - 1}`;
     const order =
@@ -184,7 +188,7 @@ const GuideTree = ({
     const newItem: NodeData = {
       key: newKey,
       _id: newKey,
-      name: "",
+      name: "Tiêu đề node",
       order: order,
       supId: guidelineSelected._id,
       subNodes: [],
@@ -220,18 +224,37 @@ const GuideTree = ({
     }
     guideNodeSetCurrent(node);
   };
+  const onExpand = (
+    keys: React.Key[],
+    info: {
+      node: EventDataNode;
+      expanded: boolean;
+      nativeEvent: MouseEvent;
+    }
+  ) => {
+    // let index = keys.findIndex((x) => x === info.node.key);
+    // if (index !== -1) {
+    //   keys.splice(index, 1);
+    // }
+  };
 
   return (
-    <Tree switcherIcon={<div />} expandedKeys={expandedKeys}>
+    <Tree
+      switcherIcon={!guidelineViewMode ? <div /> : undefined}
+      expandedKeys={expandedKeys}
+      onExpand={onExpand}
+    >
       <TreeNode
         key={"root"}
         title={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            size={"small"}
-            onClick={(e: any) => handleAddNewNodeInRoot()}
-          />
+          !guidelineViewMode && (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              size={"small"}
+              onClick={(e: any) => handleAddNewNodeInRoot()}
+            />
+          )
         }
       >
         {renderTreeNodes({
@@ -242,6 +265,7 @@ const GuideTree = ({
           handleItemCheckChanged,
         })}
       </TreeNode>
+      )
     </Tree>
   );
 };
@@ -254,6 +278,7 @@ export default connect(
       guideNodesInserted: state.guideNode.guideNodesInserted,
       currentGuideNode: state.guideNode.currentGuideNode,
       nodeNavDirection: state.nodeNav.direction,
+      guidelineViewMode: state.guideline.guidelineViewMode,
     };
   },
   {

@@ -8,10 +8,12 @@ import { TinyAPIKey } from "utils/constants";
 export interface GuideContentProps {
   currentGuideNodeContent: NodeContent;
   guideNodeContentPut: any;
+  guidelineViewMode: boolean;
 }
 const GuideContent = ({
   currentGuideNodeContent,
   guideNodeContentPut,
+  guidelineViewMode,
 }: GuideContentProps) => {
   const [editorState, setEditorState] = useState("");
   const [runInterval, setRunInterval] = useState(false);
@@ -51,7 +53,10 @@ const GuideContent = ({
       });
     }
   };
-  return (
+  function createMarkup() {
+    return { __html: editorState };
+  }
+  return !guidelineViewMode ? (
     <Editor
       apiKey={TinyAPIKey}
       disabled={currentGuideNodeContent == null}
@@ -74,12 +79,15 @@ const GuideContent = ({
       onEditorChange={handleEditorChange}
       onBlur={saveTextChanged}
     />
+  ) : (
+    <div dangerouslySetInnerHTML={createMarkup()} />
   );
 };
 export default connect(
   (state: any) => {
     return {
       currentGuideNodeContent: state.guideNodeContent.currentGuideNodeContent,
+      guidelineViewMode: state.guideline.guidelineViewMode,
     };
   },
   {

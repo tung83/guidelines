@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { Input, Button, Checkbox } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { NodeData } from "model";
 
 export interface GuideTreeNodeProps {
@@ -13,6 +12,7 @@ export interface GuideTreeNodeProps {
   handleItemNameChanged: any;
   handleItemCheckChanged: any;
   currentGuideNode: NodeData;
+  guidelineViewMode: boolean;
 }
 const GuideTreeNode = ({
   item,
@@ -21,6 +21,7 @@ const GuideTreeNode = ({
   handleItemNameChanged,
   handleItemCheckChanged,
   currentGuideNode,
+  guidelineViewMode,
 }: GuideTreeNodeProps) => {
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
@@ -55,15 +56,16 @@ const GuideTreeNode = ({
       handleItemNameChanged({ ...item, name: nameValue });
     }
   };
-
   return (
     <div className="tree-node-guideline">
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        size={"small"}
-        onClick={(e: any) => handleAddNewNode(item)}
-      />
+      {!guidelineViewMode && (
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          size={"small"}
+          onClick={(e: any) => handleAddNewNode(item)}
+        />
+      )}
       <div className="checkbox-container">
         <Checkbox className="tree-node-guide-checkbox" checked={checkedValue} />
         <div
@@ -71,24 +73,31 @@ const GuideTreeNode = ({
           onClick={handleChangeCheckboxTrigger}
         ></div>
       </div>
-      <Input
-        className="tree-node-guide-text"
-        value={nameValue}
-        placeholder="Tiêu đề node"
-        onChange={handleChangeName}
-        onBlur={handleBlur}
-      />
-      <Button
-        className="tree-node-guide-btn-delete"
-        icon={<CloseOutlined />}
-        size={"small"}
-        onClick={(e: any) => handleDeleteNode(item)}
-      />
+      {!guidelineViewMode ? (
+        <React.Fragment>
+          <Input
+            className="tree-node-guide-text"
+            value={nameValue}
+            placeholder="Tiêu đề node"
+            onChange={handleChangeName}
+            onBlur={handleBlur}
+          />
+          <Button
+            className="tree-node-guide-btn-delete"
+            icon={<CloseOutlined />}
+            size={"small"}
+            onClick={(e: any) => handleDeleteNode(item)}
+          />
+        </React.Fragment>
+      ) : (
+        <span>{item.name}</span>
+      )}
     </div>
   );
 };
 export default connect((state: any) => {
   return {
     currentGuideNode: state.guideNode.currentGuideNode,
+    guidelineViewMode: state.guideline.guidelineViewMode,
   };
 }, {})(GuideTreeNode);

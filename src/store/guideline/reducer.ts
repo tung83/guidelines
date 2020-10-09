@@ -6,11 +6,13 @@ export interface IGuidelineState {
   guidelines: NodeData[];
   currentChildNodes: NodeData[] | [];
   guidelineSelected: NodeData | null;
+  guidelineViewMode: boolean;
 }
 const initialState = {
   guidelines: [],
   currentChildNodes: [],
   guidelineSelected: null,
+  guidelineViewMode: false,
 };
 
 export default function guidelineReducer(
@@ -24,6 +26,8 @@ export default function guidelineReducer(
       return { ...state, ...{ currentChildNodes: action.payload } };
     case actions.ON_GUIDELINE_SELECTED:
       return { ...state, ...{ guidelineSelected: action.payload } };
+    case actions.ON_GUIDELINE_VIEW_MODE:
+      return { ...state, ...{ guidelineViewMode: action.payload } };
 
     default:
       return state;
