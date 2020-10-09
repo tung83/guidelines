@@ -2,7 +2,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## TinyMCE React
 Make sure you register account on www.tiny.cloud
+
 [Get  Your Tiny API Key](https://www.tiny.cloud/my-account/dashboard/) 
+
 Fulfil your site domain to remove warning [domain list](https://www.tiny.cloud/my-account/domains/) 
 
 [TinyMCE React integration quick start guide](https://www.tiny.cloud/docs/integrations/react/) 
@@ -15,7 +17,10 @@ Fulfil your site domain to remove warning [domain list](https://www.tiny.cloud/m
 
 ## Available Scripts
 
+
 In the project directory, you can run:
+
+### `yarn install`
 
 ### `yarn start`
 
