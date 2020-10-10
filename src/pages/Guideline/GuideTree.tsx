@@ -232,10 +232,7 @@ const GuideTree = ({
       nativeEvent: MouseEvent;
     }
   ) => {
-    // let index = keys.findIndex((x) => x === info.node.key);
-    // if (index !== -1) {
-    //   keys.splice(index, 1);
-    // }
+    setExpandedKeys(keys.map((x) => x.toString()));
   };
 
   return (
