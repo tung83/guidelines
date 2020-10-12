@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Input, Button, Checkbox } from "antd";
+import { Input, Button } from "antd";
 import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import "./Guideline.css";
 import { NodeData } from "model";
@@ -10,7 +10,6 @@ export interface GuideTreeNodeProps {
   handleAddNewNode: any;
   handleDeleteNode: any;
   handleItemNameChanged: any;
-  currentGuideNode: NodeData;
   guidelineViewMode: boolean;
 }
 const GuideTreeNode = ({
@@ -18,32 +17,15 @@ const GuideTreeNode = ({
   handleAddNewNode,
   handleDeleteNode,
   handleItemNameChanged,
-  currentGuideNode,
   guidelineViewMode,
 }: GuideTreeNodeProps) => {
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
-  const [checkedValue, setCheckedValue] = useState(false);
   useEffect(() => {
-    setNameValue(item.name);
+    setNameValue(item.name + ">>" + item.order);
     setOldText(item.name);
-    if (currentGuideNode && item.key === currentGuideNode.key) {
-      setCheckedValue(true);
-    }
   }, [item]);
 
-  // reset checkbox
-  useEffect(() => {
-    if (checkedValue) {
-      if (!currentGuideNode || item.key !== currentGuideNode.key)
-        setCheckedValue(false);
-    }
-  }, [currentGuideNode]);
-
-  const handleChangeCheckboxTrigger = (e: any) => {
-    const newCheckedValue = !checkedValue;
-    setCheckedValue(newCheckedValue);
-  };
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameValue(e.target.value);
   };
@@ -86,7 +68,6 @@ const GuideTreeNode = ({
 };
 export default connect((state: any) => {
   return {
-    currentGuideNode: state.guideNode.currentGuideNode,
     guidelineViewMode: state.guideline.guidelineViewMode,
   };
 }, {})(GuideTreeNode);

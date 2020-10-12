@@ -11,7 +11,7 @@ export const flatten = (treeNodes: NodeData[]): string[] => {
 };
 const runFlatten = (data: NodeData, result: string[]) => {
   if (!data) return;
-  result.push(`${data.key}-${data.order}`);
+  result.push(data.key);
   return data.subNodes?.reduce((accumulator, currentValue) => {
     runFlatten(currentValue, accumulator);
     return accumulator;

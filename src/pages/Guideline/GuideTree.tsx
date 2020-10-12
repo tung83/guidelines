@@ -46,7 +46,7 @@ const renderTreeNodes = ({
     if (!item.subNodes || item.subNodes.length === 0) {
       return (
         <TreeNode
-          key={`${item.key}-${item.order}`}
+          key={item.key}
           title={
             <GuideTreeNode
               item={item}
@@ -60,7 +60,7 @@ const renderTreeNodes = ({
     } else {
       return (
         <TreeNode
-          key={`${item.key}-${item.order}`}
+          key={item.key}
           title={
             <GuideTreeNode
               item={item}
@@ -136,6 +136,7 @@ const GuideTree = ({
   //move node
   useEffect(() => {
     if (nodeNavDirection) {
+      debugger;
       nodeNavTurn(null);
       let movedNodes = moveNode(treeData, currentGuideNode, nodeNavDirection);
       if (movedNodes && movedNodes.length) {
@@ -193,7 +194,7 @@ const GuideTree = ({
   };
   const processAddNewNode = (newTreeData: NodeData[], newItem: NodeData) => {
     setTreeData([...newTreeData]);
-    setExpandedKeys([...expandedKeys, `${newItem.key}-${newItem.order}`]);
+    setExpandedKeys([...expandedKeys, newItem.key]);
     guideNodePost({
       supId: newItem.supId,
       order: newItem.order,
@@ -233,7 +234,7 @@ const GuideTree = ({
     if (keys.length === 1) {
       let foundNode = findNode(
         treeData,
-        (item: NodeData) => `${item.key}-${item.order}` === keys[0]
+        (item: NodeData) => item.key === keys[0]
       );
       if (foundNode) {
         guideNodeContentFetchDetail(foundNode._id);
