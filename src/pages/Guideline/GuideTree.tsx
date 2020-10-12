@@ -26,7 +26,7 @@ import {
 } from "../../utils/useNode";
 import GuideTreeNode from "./GuideTreeNode";
 import { NodeData } from "model";
-import { EventDataNode } from "antd/lib/tree";
+import { DataNode, EventDataNode } from "antd/lib/tree";
 const { TreeNode } = Tree;
 
 export interface TreeNodesProps {
@@ -34,14 +34,12 @@ export interface TreeNodesProps {
   handleAddNewNode: any;
   handleDeleteNode: any;
   handleItemNameChanged: any;
-  handleItemCheckChanged: any;
 }
 const renderTreeNodes = ({
   treeNodes,
   handleAddNewNode,
   handleDeleteNode,
   handleItemNameChanged,
-  handleItemCheckChanged,
 }: TreeNodesProps): any => {
   const orderedData = orderNode(treeNodes);
   return orderedData.map((item) => {
@@ -55,7 +53,6 @@ const renderTreeNodes = ({
               handleAddNewNode={handleAddNewNode}
               handleDeleteNode={handleDeleteNode}
               handleItemNameChanged={handleItemNameChanged}
-              handleItemCheckChanged={handleItemCheckChanged}
             />
           }
         />
@@ -70,7 +67,6 @@ const renderTreeNodes = ({
               handleAddNewNode={handleAddNewNode}
               handleDeleteNode={handleDeleteNode}
               handleItemNameChanged={handleItemNameChanged}
-              handleItemCheckChanged={handleItemCheckChanged}
             />
           }
         >
@@ -79,7 +75,6 @@ const renderTreeNodes = ({
             handleAddNewNode,
             handleDeleteNode,
             handleItemNameChanged,
-            handleItemCheckChanged,
           })}
         </TreeNode>
       );
@@ -216,14 +211,6 @@ const GuideTree = ({
     setTreeData([...treeData]);
     guideNodePut({ _id: node._id, name: node.name });
   };
-  const handleItemCheckChanged = (node: NodeData) => {
-    if (node) {
-      guideNodeContentFetchDetail(node._id);
-    } else {
-      guideNodeContentReset();
-    }
-    guideNodeSetCurrent(node);
-  };
   const onExpand = (
     keys: React.Key[],
     info: {
@@ -234,12 +221,36 @@ const GuideTree = ({
   ) => {
     setExpandedKeys(keys.map((x) => x.toString()));
   };
+  const onSelectionChanged = (
+    keys: React.Key[],
+    info: {
+      node: EventDataNode;
+      selected: boolean;
+      selectedNodes: DataNode[];
+      nativeEvent: MouseEvent;
+    }
+  ) => {
+    if (keys.length === 1) {
+      let foundNode = findNode(
+        treeData,
+        (item: NodeData) => `${item.key}-${item.order}` === keys[0]
+      );
+      if (foundNode) {
+        guideNodeContentFetchDetail(foundNode._id);
+        guideNodeSetCurrent(foundNode);
+        return;
+      }
+    }
+    guideNodeContentReset();
+    guideNodeSetCurrent(null);
+  };
 
   return (
     <Tree
       switcherIcon={!guidelineViewMode ? <div /> : undefined}
       expandedKeys={expandedKeys}
       onExpand={onExpand}
+      onSelect={onSelectionChanged}
     >
       <TreeNode
         key={"root"}
@@ -259,7 +270,6 @@ const GuideTree = ({
           handleAddNewNode,
           handleDeleteNode,
           handleItemNameChanged,
-          handleItemCheckChanged,
         })}
       </TreeNode>
       )

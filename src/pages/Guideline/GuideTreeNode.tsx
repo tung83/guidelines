@@ -10,7 +10,6 @@ export interface GuideTreeNodeProps {
   handleAddNewNode: any;
   handleDeleteNode: any;
   handleItemNameChanged: any;
-  handleItemCheckChanged: any;
   currentGuideNode: NodeData;
   guidelineViewMode: boolean;
 }
@@ -19,7 +18,6 @@ const GuideTreeNode = ({
   handleAddNewNode,
   handleDeleteNode,
   handleItemNameChanged,
-  handleItemCheckChanged,
   currentGuideNode,
   guidelineViewMode,
 }: GuideTreeNodeProps) => {
@@ -45,7 +43,6 @@ const GuideTreeNode = ({
   const handleChangeCheckboxTrigger = (e: any) => {
     const newCheckedValue = !checkedValue;
     setCheckedValue(newCheckedValue);
-    handleItemCheckChanged(newCheckedValue ? item : null);
   };
   const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameValue(e.target.value);
@@ -58,23 +55,15 @@ const GuideTreeNode = ({
   };
   return (
     <div className="tree-node-guideline">
-      {!guidelineViewMode && (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          size={"small"}
-          onClick={(e: any) => handleAddNewNode(item)}
-        />
-      )}
-      <div className="checkbox-container">
-        <Checkbox className="tree-node-guide-checkbox" checked={checkedValue} />
-        <div
-          className="checkbox-action"
-          onClick={handleChangeCheckboxTrigger}
-        ></div>
-      </div>
       {!guidelineViewMode ? (
         <React.Fragment>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            size={"small"}
+            onClick={(e: any) => handleAddNewNode(item)}
+          />
+
           <Input
             className="tree-node-guide-text"
             value={nameValue}
