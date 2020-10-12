@@ -117,6 +117,7 @@ const GuideTree = ({
   const [treeData, setTreeData] = useState<any[]>([]);
   const [newIndex, setNewIndex] = useState(0);
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
 
   useEffect(() => {
     const dataList = updateNodeKey(currentChildNodes);
@@ -133,10 +134,14 @@ const GuideTree = ({
     });
     setTreeData([...treeData]);
   }, [guideNodesInserted]);
+  useEffect(() => {
+    if (!currentGuideNode) {
+      setSelectedKeys([]);
+    }
+  }, [currentGuideNode]);
   //move node
   useEffect(() => {
     if (nodeNavDirection) {
-      debugger;
       nodeNavTurn(null);
       let movedNodes = moveNode(treeData, currentGuideNode, nodeNavDirection);
       if (movedNodes && movedNodes.length) {
@@ -239,11 +244,13 @@ const GuideTree = ({
       if (foundNode) {
         guideNodeContentFetchDetail(foundNode._id);
         guideNodeSetCurrent(foundNode);
+        setSelectedKeys(keys.map((x) => x.toString()));
         return;
       }
     }
     guideNodeContentReset();
     guideNodeSetCurrent(null);
+    setSelectedKeys([]);
   };
 
   return (
@@ -252,6 +259,7 @@ const GuideTree = ({
       expandedKeys={expandedKeys}
       onExpand={onExpand}
       onSelect={onSelectionChanged}
+      selectedKeys={selectedKeys}
     >
       <TreeNode
         key={"root"}

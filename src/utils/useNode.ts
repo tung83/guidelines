@@ -125,15 +125,17 @@ const swapPostion = (
 ): NodeData[] | undefined => {
   if (direction === "up") {
     if (index > 0) {
-      treeNodes[index - 1].order++;
-      treeNodes[index].order--;
+      const beforeIndexOrder = treeNodes[index - 1].order;
+      treeNodes[index - 1].order = treeNodes[index].order;
+      treeNodes[index].order = beforeIndexOrder;
       return [treeNodes[index - 1], treeNodes[index]];
     }
   }
   if (direction === "down") {
     if (index < treeNodes.length - 1) {
-      treeNodes[index + 1].order--;
-      treeNodes[index].order++;
+      const afterIndexOrder = treeNodes[index + 1].order;
+      treeNodes[index + 1].order = treeNodes[index].order;
+      treeNodes[index].order = afterIndexOrder;
       return [treeNodes[index], treeNodes[index + 1]];
     }
   }

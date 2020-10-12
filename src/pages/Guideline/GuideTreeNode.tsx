@@ -22,7 +22,7 @@ const GuideTreeNode = ({
   const [nameValue, setNameValue] = useState("");
   const [oldText, setOldText] = useState<any>();
   useEffect(() => {
-    setNameValue(item.name + ">>" + item.order);
+    setNameValue(item.name);
     setOldText(item.name);
   }, [item]);
 
